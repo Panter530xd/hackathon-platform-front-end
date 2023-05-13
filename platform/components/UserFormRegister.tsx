@@ -9,9 +9,10 @@ interface FormValues {
   academy: string;
   group: string;
   participation: string;
-  foodPreferences: string;
-  foodAllergies: string;
+  foodPreferences: string[];
+  foodAllergies: string[];
   additionalInfo: string;
+  options?: string[];
 }
 
 type Academy = {
@@ -35,7 +36,10 @@ const RegistrationForm = () => {
     try {
       setSubmitting(true);
       setServerError("");
-      const response = await axios.post("/api/registration", data);
+      const response = await axios.post("/api/registration", {
+        ...data,
+        options: options,
+      });
       console.log(response.data);
     } catch (error: AxiosError | any) {
       setServerError(error.message);
@@ -47,8 +51,11 @@ const RegistrationForm = () => {
   useEffect(() => {
     const fetchAcademies = async () => {
       try {
-        const response = await axios.get<Academy[]>("/api/academies");
+        const response = await axios.get<Academy[]>(
+          "https://a769-92-55-111-13.ngrok-free.app/api/academies"
+        );
         setAcademies(response.data);
+        console.log(response.data);
       } catch (error) {
         console.error(error);
       }
