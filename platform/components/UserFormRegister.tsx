@@ -8,10 +8,10 @@ interface FormValues {
   phone: string;
   academy: string;
   group: string;
+  numberOfMonths: string;
   participation: string;
   foodPreferences: string[];
   foodAllergies: string[];
-  additionalInfo: string;
   options?: string[];
 }
 
@@ -31,6 +31,8 @@ const RegistrationForm = () => {
   const [academies, setAcademies] = useState<Academy[]>([]);
   const [selectedAcademy, setSelectedAcademy] = useState<Academy | null>(null);
   const [options, setOptions] = useState<string[]>([]);
+  const [foodPreferences, setFoodPreferences] = useState<string[]>([]);
+  const [foodAllergies, setFoodAllergies] = useState<string[]>([]);
 
   const onSubmit = async (data: FormValues) => {
     try {
@@ -38,7 +40,8 @@ const RegistrationForm = () => {
       setServerError("");
       const response = await axios.post("/api/registration", {
         ...data,
-        options: options,
+        foodPreferences: foodPreferences,
+        foodAllergies: foodAllergies,
       });
       console.log(response.data);
     } catch (error: AxiosError | any) {
@@ -52,7 +55,7 @@ const RegistrationForm = () => {
     const fetchAcademies = async () => {
       try {
         const response = await axios.get<Academy[]>(
-          "https://a769-92-55-111-13.ngrok-free.app/api/academies"
+          "https://b81a-92-55-111-2.ngrok-free.app/api/academies"
         );
         setAcademies(response.data);
         console.log(response.data);
@@ -66,18 +69,18 @@ const RegistrationForm = () => {
 
   useEffect(() => {
     if (selectedAcademy) {
-      const fetchOptions = async () => {
+      const fetchFoodPreferences = async () => {
         try {
           const response = await axios.get<string[]>(
-            `/api/academies/${selectedAcademy.id}/options`
+            `/api/academies/${selectedAcademy.id}/food-preferences`
           );
-          setOptions(response.data);
+          setFoodPreferences(response.data);
         } catch (error) {
           console.error(error);
         }
       };
 
-      fetchOptions();
+      fetchFoodPreferences();
     }
   }, [selectedAcademy]);
 
@@ -85,6 +88,16 @@ const RegistrationForm = () => {
     const academyId = Number(event.target.value);
     const academy = academies.find((a) => a.id === academyId) || null;
     setSelectedAcademy(academy);
+  };
+
+  const handleFoodPreferenceChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedOptions = Array.from(
+      event.target.selectedOptions,
+      (option) => option.value
+    );
+    setFoodPreferences(selectedOptions);
   };
 
   return (
@@ -126,9 +139,8 @@ const RegistrationForm = () => {
           id="academy"
           name="academy"
           onChange={handleAcademyChange}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
         >
-          <option value="">--Please select an academy--</option>
           {academies.map((academy) => (
             <option key={academy.id} value={academy.id}>
               {academy.name}
@@ -152,45 +164,100 @@ const RegistrationForm = () => {
             </select>
           </div>
         )}
-        <label htmlFor="participation">Participation</label>
-        <select
-          id="participation"
-          {...register("participation", { required: true })}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-        >
-          <option value="">--Please choose an option--</option>
-          <option value="live">Live</option>
-          <option value="online">Online</option>
-        </select>
-        {errors.participation && (
-          <span className="text-red-500">Participation is required</span>
-        )}
-        <label htmlFor="food-preferences">Food Preferences</label>
-        <input
-          type="text"
-          id="food-preferences"
-          {...register("foodPreferences")}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-        />
-        <label htmlFor="food-allergies">Food Allergies</label>
-        <input
-          type="text"
-          id="food-allergies"
-          {...register("foodAllergies")}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-        />
-        <label htmlFor="additional-info">Additional Info</label>
-        <textarea
-          id="additional-info"
-          {...register("additionalInfo")}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
-        />
+        <div className="flex flex-col space-y-2">
+          <label htmlFor="numberOfMonths">
+            Number of months that you are involved in the academy
+          </label>
+          <input
+            type="text"
+            id="numberOfMonths"
+            {...register("numberOfMonths", { required: true })}
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+          />
+        </div>
+        <div className="flex flex-col space-y-4  ">
+          <label
+            htmlFor="participation"
+            className="text-gray-700 dark:text-white"
+          >
+            I will participate
+          </label>
+          <div className="flex justify-between w-8/12 mx-auto">
+            <div className="relative inline-flex items-center">
+              <input
+                type="checkbox"
+                id="participation"
+                {...register("participation")}
+                className="form-checkbox h-5 w-5 text-gray-600 dark:text-gray-400 transition duration-150 ease-in-out accent-white"
+              />
+              <label
+                htmlFor="participation_live"
+                className="ml-2 text-gray-700 dark:text-white"
+              >
+                Live
+              </label>
+            </div>
+            <div className="relative inline-flex items-center">
+              <input
+                type="checkbox"
+                id="participation"
+                {...register("participation")}
+                className="form-checkbox h-5 w-5 text-gray-600 dark:text-gray-400 transition duration-150 ease-in-out accent-white"
+              />
+              <label
+                htmlFor="participation_online"
+                className="ml-2 text-gray-700 dark:text-white"
+              >
+                Online
+              </label>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col space-y-2">
+          <label htmlFor="foodPreferences">Food preferences</label>
+          <select
+            id="foodPreferences"
+            onChange={handleFoodPreferenceChange}
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+          >
+            {foodPreferences.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+        </div>
 
+        <div className="flex flex-col space-y-2">
+          <label htmlFor="foodAllergies">Food allergies</label>
+          <input
+            type="text"
+            id="foodAllergies"
+            {...register("foodAllergies")}
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+          />
+        </div>
+
+        <div className="relative inline-flex items-center justify-center">
+          <input
+            type="checkbox"
+            checked
+            id="participation"
+            {...register("participation")}
+            className="form-checkbox h-5 w-5 text-gray-600 dark:text-gray-400 transition duration-150 ease-in-out accent-white"
+          />
+          <label
+            htmlFor="participation_online"
+            className="ml-2 text-gray-700 dark:text-white"
+          >
+            I accept the terms and conditions
+          </label>
+        </div>
         {serverError && <span className="text-red-500">{serverError}</span>}
         <button
           type="submit"
           disabled={submitting}
-          className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-400"
+          className="bg-white hover:bg-gray-100 text-text-gray-700 px-4 py-2 rounded-lg disabled:bg-gray-400 border-gray-400 border-2 "
         >
           {submitting ? "Submitting..." : "Submit"}
         </button>
