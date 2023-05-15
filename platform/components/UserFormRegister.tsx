@@ -101,45 +101,53 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div className="py-8">
+    <div className="py-8 bg-img">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col space-y-4 md:w-4/12 w-11/12 mx-auto"
+        className="flex flex-col space-y-4 md:w-6/12 w-11/12 mx-auto element md:p-20 p-5 rounded-lg shadow-lg"
       >
-        <label htmlFor="name">Name</label>
+        <label htmlFor="name" className="text-white font-bold">
+          Name
+        </label>
         <input
           type="text"
           id="name"
           {...register("name", { required: true })}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 "
         />
         {errors.name && <span className="text-red-500">Name is required</span>}
-        <label htmlFor="email">Email</label>
+        <label htmlFor="email" className="text-white font-bold">
+          Email
+        </label>
         <input
           type="email"
           id="email"
           {...register("email", { required: true })}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 "
         />
         {errors.email && (
           <span className="text-red-500">Email is required</span>
         )}
-        <label htmlFor="phone">Phone</label>
+        <label htmlFor="phone" className="text-white font-bold">
+          Phone
+        </label>
         <input
           type="tel"
           id="phone"
           {...register("phone", { required: true })}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 "
         />
         {errors.phone && (
           <span className="text-red-500">Phone is required</span>
         )}
-        <label htmlFor="academy">Select Academy:</label>
+        <label htmlFor="academy" className="text-white font-bold">
+          Select Academy:
+        </label>
         <select
           id="academy"
           name="academy"
           onChange={handleAcademyChange}
-          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5  "
         >
           {academies.map((academy) => (
             <option key={academy.id} value={academy.id}>
@@ -150,11 +158,13 @@ const RegistrationForm = () => {
 
         {selectedAcademy && (
           <div>
-            <label htmlFor="options">Select Options:</label>
+            <label htmlFor="options" className="text-white font-bold">
+              Select Options:
+            </label>
             <select
               id="options"
               name="options"
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 "
             >
               {options.map((option) => (
                 <option key={option} value={option}>
@@ -165,34 +175,31 @@ const RegistrationForm = () => {
           </div>
         )}
         <div className="flex flex-col space-y-2">
-          <label htmlFor="numberOfMonths">
+          <label htmlFor="numberOfMonths" className="text-white font-bold">
             Number of months that you are involved in the academy
           </label>
           <input
             type="text"
             id="numberOfMonths"
             {...register("numberOfMonths", { required: true })}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 "
           />
         </div>
         <div className="flex flex-col space-y-4  ">
-          <label
-            htmlFor="participation"
-            className="text-gray-700 dark:text-white"
-          >
+          <label htmlFor="participation" className="text-white font-bold">
             I will participate
           </label>
-          <div className="flex justify-between w-8/12 mx-auto">
+          <div className="flex w-8/12 mx-auto space-x-2">
             <div className="relative inline-flex items-center">
               <input
                 type="checkbox"
                 id="participation"
                 {...register("participation")}
-                className="form-checkbox h-5 w-5 text-gray-600 dark:text-gray-400 transition duration-150 ease-in-out accent-white"
+                className="form-checkbox w-8 h-8 text-gray-600  transition duration-150 ease-in-out accent-white"
               />
               <label
                 htmlFor="participation_live"
-                className="ml-2 text-gray-700 dark:text-white"
+                className="ml-2 text-white font-bold"
               >
                 Live
               </label>
@@ -202,11 +209,11 @@ const RegistrationForm = () => {
                 type="checkbox"
                 id="participation"
                 {...register("participation")}
-                className="form-checkbox h-5 w-5 text-gray-600 dark:text-gray-400 transition duration-150 ease-in-out accent-white"
+                className="form-checkbox w-8 h-8 text-gray-600  transition duration-150 ease-in-out accent-white"
               />
               <label
                 htmlFor="participation_online"
-                className="ml-2 text-gray-700 dark:text-white"
+                className="ml-2 text-white font-bold "
               >
                 Online
               </label>
@@ -214,11 +221,13 @@ const RegistrationForm = () => {
           </div>
         </div>
         <div className="flex flex-col space-y-2">
-          <label htmlFor="foodPreferences">Food preferences</label>
+          <label htmlFor="foodPreferences" className="text-white font-bold">
+            Food preferences
+          </label>
           <select
             id="foodPreferences"
             onChange={handleFoodPreferenceChange}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5  dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5  "
           >
             {foodPreferences.map((option) => (
               <option key={option} value={option}>
@@ -229,12 +238,14 @@ const RegistrationForm = () => {
         </div>
 
         <div className="flex flex-col space-y-2">
-          <label htmlFor="foodAllergies">Food allergies</label>
+          <label htmlFor="foodAllergies" className="text-white font-bold">
+            Food allergies
+          </label>
           <input
             type="text"
             id="foodAllergies"
             {...register("foodAllergies")}
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 "
           />
         </div>
 
@@ -244,11 +255,11 @@ const RegistrationForm = () => {
             checked
             id="participation"
             {...register("participation")}
-            className="form-checkbox h-5 w-5 text-gray-600 dark:text-gray-400 transition duration-150 ease-in-out accent-white"
+            className="form-checkbox h-5 w-5 text-gray-600  transition duration-150 ease-in-out accent-white"
           />
           <label
             htmlFor="participation_online"
-            className="ml-2 text-gray-700 dark:text-white"
+            className="ml-2 font-bold  text-white"
           >
             I accept the terms and conditions
           </label>
@@ -257,7 +268,7 @@ const RegistrationForm = () => {
         <button
           type="submit"
           disabled={submitting}
-          className="bg-white hover:bg-gray-100 text-text-gray-700 px-4 py-2 rounded-lg disabled:bg-gray-400 border-gray-400 border-2 "
+          className="bg-white hover:bg-gray-100 text-gray-700 px-4 py-2 rounded-lg disabled:bg-gray-400 border-gray-400 border-2 "
         >
           {submitting ? "Submitting..." : "Submit"}
         </button>
