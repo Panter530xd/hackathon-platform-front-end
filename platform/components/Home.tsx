@@ -111,6 +111,7 @@ export default function Home() {
               height={150}
               src={HeroImg.src}
               alt={"Hero Banners"}
+              priority
               className=" w-[500px] h-auto"
             />
           </div>
