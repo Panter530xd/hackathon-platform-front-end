@@ -101,7 +101,7 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div className="py-8 bg-img">
+    <div className="py-8 bg-user">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-4 md:w-6/12 w-11/12 mx-auto element md:p-20 p-5 rounded-lg shadow-lg"

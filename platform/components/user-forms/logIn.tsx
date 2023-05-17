@@ -1,19 +1,38 @@
+import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
 
 interface FormValues {
-  username: string;
+  email: string;
   password: string;
 }
 
 export default function LogIn() {
+  const router = useRouter();
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormValues>();
-  const onSubmit = (data: FormValues) => {
-    console.log(data);
+  } = useForm<FormValues>({
+    defaultValues: { email: "demo@demo.com", password: "12345" },
+  });
+
+  const supabase = useSupabaseClient();
+
+  const onSubmit = async (formData: FormValues) => {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: formData.email,
+      password: formData.password,
+    });
+
+    if (error) {
+      throw error;
+    }
+
+    router.push("/dashboard");
+
     reset();
   };
 
@@ -32,11 +51,11 @@ export default function LogIn() {
         <input
           id="username"
           type="text"
-          {...register("username", { required: true, maxLength: 20 })}
+          {...register("email", { required: true, maxLength: 20 })}
           className="bg-white border-2 border-[#0AE47C] text-gray-900 text-sm rounded-lg  block w-full p-2.5 "
         />
-        {errors.username && (
-          <span className="text-red-500">User name is required</span>
+        {errors.email && (
+          <span className="text-red-500">Email is required</span>
         )}
         <label htmlFor="password" className="text-black">
           Password
