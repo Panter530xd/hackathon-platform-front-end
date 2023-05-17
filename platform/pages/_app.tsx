@@ -2,16 +2,28 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Toaster } from "react-hot-toast";
 import QueryWrapper from "@/layouts/QeryWrapper";
-import Heder from "@/components/Heder";
-import Footer from "@/components/Footer";
+import {
+  createBrowserSupabaseClient,
+  Session,
+} from "@supabase/auth-helpers-nextjs";
+import { SessionContextProvider } from "@supabase/auth-helpers-react";
+import { useState } from "react";
 
-export default function App({ Component, pageProps }: AppProps) {
+export default function App({
+  Component,
+  pageProps,
+}: AppProps<{ initialSession: Session }>) {
+  const [supabaseClient] = useState(() => createBrowserSupabaseClient());
+
   return (
-    <QueryWrapper>
-      <Heder />
-      <Component {...pageProps} />
-      <Toaster position="top-center" />
-      <Footer />
-    </QueryWrapper>
+    <SessionContextProvider
+      supabaseClient={supabaseClient}
+      initialSession={pageProps.initialSession}
+    >
+      <QueryWrapper>
+        <Component {...pageProps} />
+        <Toaster position="top-center" />
+      </QueryWrapper>
+    </SessionContextProvider>
   );
 }

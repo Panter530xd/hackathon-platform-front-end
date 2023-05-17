@@ -1,5 +1,5 @@
 import Image from "next/image";
-import HeroImg from "../public/img/HERO IMAGE 2.png";
+import HeroImg from "../../public/img/hero-img.png";
 import Link from "next/link";
 import { useRouter } from "next/router";
 export default function Home() {
@@ -71,7 +71,7 @@ export default function Home() {
           </li>
           <li className="mb-5">
             <Link
-              href="/login"
+              href="/admin-login"
               className="font-roboto text-lg text-white font-semibold bg-[#0AE47C] py-2 px-7 rounded-lg "
             >
               Log in

@@ -6,6 +6,7 @@
   background-image: url("../public/img/viber_image_2023-05-14_18-19-04-075.jpg");
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
 }
 
 .element {
@@ -13,4 +14,11 @@
 }
 .element2 {
   background-color: rgba(207, 219, 219, 0.733);
+}
+
+.bg-admin {
+  background-image: url("../public/img/bg.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }
