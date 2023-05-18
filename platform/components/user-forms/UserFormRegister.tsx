@@ -4,6 +4,7 @@ import axios, { AxiosError } from "axios";
 
 interface FormValues {
   name: string;
+  lastname: string;
   email: string;
   phone: string;
   academy: string;
@@ -101,13 +102,13 @@ const RegistrationForm = () => {
   };
 
   return (
-    <div className="py-8 bg-user">
+    <div className="py-8 bg-user font-exoFont">
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-4 md:w-6/12 w-11/12 mx-auto element md:p-20 p-5 rounded-lg shadow-lg"
       >
         <label htmlFor="name" className="text-white font-bold">
-          Name
+          First name
         </label>
         <input
           type="text"
@@ -115,7 +116,21 @@ const RegistrationForm = () => {
           {...register("name", { required: true })}
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 "
         />
-        {errors.name && <span className="text-red-500">Name is required</span>}
+        {errors.name && (
+          <span className="text-red-700 font-bold">Name is required</span>
+        )}
+        <label htmlFor="lastname" className="text-white font-bold">
+          Last name
+        </label>
+        <input
+          type="text"
+          id="lastname"
+          {...register("lastname", { required: true })}
+          className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 "
+        />
+        {errors.lastname && (
+          <span className="text-red-700 font-bold">Last name is required</span>
+        )}
         <label htmlFor="email" className="text-white font-bold">
           Email
         </label>
@@ -126,7 +141,7 @@ const RegistrationForm = () => {
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 "
         />
         {errors.email && (
-          <span className="text-red-500">Email is required</span>
+          <span className="text-red-700 font-bold">Email is required</span>
         )}
         <label htmlFor="phone" className="text-white font-bold">
           Phone
@@ -138,7 +153,7 @@ const RegistrationForm = () => {
           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg  block w-full p-2.5 "
         />
         {errors.phone && (
-          <span className="text-red-500">Phone is required</span>
+          <span className="text-red-700 font-bold">Phone is required</span>
         )}
         <label htmlFor="academy" className="text-white font-bold">
           Select Academy:
@@ -159,7 +174,7 @@ const RegistrationForm = () => {
         {selectedAcademy && (
           <div>
             <label htmlFor="options" className="text-white font-bold">
-              Select Options:
+              Group
             </label>
             <select
               id="options"
@@ -264,11 +279,11 @@ const RegistrationForm = () => {
             I accept the terms and conditions
           </label>
         </div>
-        {serverError && <span className="text-red-500">{serverError}</span>}
+        {serverError && <span className="text-red-700">{serverError}</span>}
         <button
           type="submit"
           disabled={submitting}
-          className="bg-white hover:bg-gray-100 text-gray-700 px-4 py-2 rounded-lg disabled:bg-gray-400 border-gray-400 border-2 "
+          className="bg-greenis border-2 border-white  text-white font-exoFont font-semibold px-4 py-2 rounded-lg disabled:bg-gray-400 w-2/6 mx-auto"
         >
           {submitting ? "Submitting..." : "Submit"}
         </button>

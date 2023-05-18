@@ -8,7 +8,7 @@ import {
 } from "@supabase/auth-helpers-nextjs";
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import { useState } from "react";
-
+import Layout from "@/layouts/FontProject";
 export default function App({
   Component,
   pageProps,
@@ -21,8 +21,10 @@ export default function App({
       initialSession={pageProps.initialSession}
     >
       <QueryWrapper>
-        <Component {...pageProps} />
-        <Toaster position="top-center" />
+        <Layout>
+          <Component {...pageProps} />
+          <Toaster position="top-center" />
+        </Layout>
       </QueryWrapper>
     </SessionContextProvider>
   );

@@ -52,7 +52,7 @@ export default function LogIn() {
           id="username"
           type="text"
           {...register("email", { required: true, maxLength: 20 })}
-          className="bg-white border-2 border-[#0AE47C] text-gray-900 text-sm rounded-lg  block w-full p-2.5 "
+          className="bg-white border-2 border-greenis text-gray-900 text-sm rounded-lg  block w-full p-2.5 "
         />
         {errors.email && (
           <span className="text-red-500">Email is required</span>
@@ -63,14 +63,14 @@ export default function LogIn() {
         <input
           type="password"
           {...register("password", { required: true, maxLength: 20 })}
-          className="bg-white border-2 border-[#0AE47C] text-gray-900 text-sm rounded-lg  block w-full p-2.5"
+          className="bg-white border-2 border-greenis text-gray-900 text-sm rounded-lg  block w-full p-2.5"
         />
         {errors.password && (
           <span className="text-red-500">Password is required</span>
         )}
         <div className="flex justify-end pt-2">
           <button
-            className="bg-[#0AE47C] text-white font-bold text-base rounded-lg px-5 py-2 uppercase"
+            className="bg-greenis text-white font-bold text-base rounded-lg px-5 py-2 uppercase"
             type="submit"
           >
             sign in
