@@ -1,4 +1,4 @@
-import { Exo_2 } from "@next/font/google";
+import { Exo_2 } from "next/font/google";
 
 const exoFont = Exo_2({
   subsets: ["latin"],

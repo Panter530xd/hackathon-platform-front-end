@@ -12,9 +12,9 @@ export default function Home() {
           <li>
             <Link
               href="/"
-              className={`font-roboto text-lg ${
+              className={` font-exoFont text-lg ${
                 asPath === "/"
-                  ? "font-bold text-[#0AE47C] border-b-4 border-[#8A8787]"
+                  ? "font-bold text-greenis  border-b-4 border-[#8A8787]"
                   : ""
               }`}
             >
@@ -24,9 +24,9 @@ export default function Home() {
           <li>
             <Link
               href="/about"
-              className={`font-roboto text-lg ${
+              className={` font-exoFont text-lg ${
                 asPath === "/about"
-                  ? "font-bold text-[#0AE47C] border-b-4 border-[#8A8787]"
+                  ? "font-bold text-greenis  border-b-4 border-[#8A8787]"
                   : ""
               }`}
             >
@@ -36,9 +36,9 @@ export default function Home() {
           <li>
             <Link
               href="/"
-              className={`font-roboto text-lg ${
+              className={` font-exoFont text-lg ${
                 asPath === "/Partnerup"
-                  ? "font-bold text-[#0AE47C] border-b-4 border-[#8A8787]"
+                  ? "font-bold text-greenis  border-b-4 border-[#8A8787]"
                   : ""
               }`}
             >
@@ -48,9 +48,9 @@ export default function Home() {
           <li>
             <Link
               href="/blog"
-              className={`font-roboto text-lg ${
+              className={` font-exoFont text-lg ${
                 asPath === "/blog"
-                  ? "font-bold text-[#0AE47C] border-b-4 border-[#8A8787]"
+                  ? "font-bold text-greenis  border-b-4 border-[#8A8787]"
                   : ""
               }`}
             >
@@ -60,9 +60,9 @@ export default function Home() {
           <li>
             <Link
               href="/faq"
-              className={`font-roboto text-lg ${
+              className={` font-exoFont text-lg ${
                 asPath === "/faq"
-                  ? "font-bold text-[#0AE47C] border-b-4 border-[#8A8787]"
+                  ? "font-bold text-greenis  border-b-4 border-[#8A8787]"
                   : ""
               }`}
             >
@@ -72,7 +72,7 @@ export default function Home() {
           <li className="mb-5">
             <Link
               href="/admin-login"
-              className="font-roboto text-lg text-white font-semibold bg-[#0AE47C] py-2 px-7 rounded-lg "
+              className=" font-exoFont text-lg text-white font-semibold bg-greenis  py-2 px-7 rounded-lg "
             >
               Log in
             </Link>
@@ -81,10 +81,10 @@ export default function Home() {
         <hr className="border-b-1 border-[#8A8787] " />
       </nav>
       <div className=" md:flex md:flex-row  flex flex-col-reverse justify-between items-center md:py-10 md:gap-10  md:w-8/12 w-11/12 mx-auto">
-        <div className="text-[#0AE47C] font-bold md:text-5xl text-3xl md:leading-normal">
+        <div className="text-greenis font-exoFont  font-bold md:text-5xl text-3xl md:leading-normal">
           <h1 className="p-0">HackMatch</h1>
           <div className="flex flex-col md:flex-row md:gap-5 gap-2">
-            <button className="bg-white text-[#0AE47C] py-1 px-2 rounded-lg md:mt-5 mt-3 text-lg  border-[#0AE47C] border-2">
+            <button className="bg-white font-exoFont text-greenis  py-1 px-2 rounded-lg md:mt-5 mt-3 text-lg  border-greenis  border-2">
               Get Update
             </button>
           </div>

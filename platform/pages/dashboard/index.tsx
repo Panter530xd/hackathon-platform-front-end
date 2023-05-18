@@ -11,54 +11,73 @@ import SevenImage from "../../public/img/7.png";
 import Link from "next/link";
 export default function Dashboard() {
   return (
-    <div className="">
+    <div>
       <Heder />
-      <div className="flex pb-10">
-        <div className=" w-4/12 flex flex-col gap-8 justify-center items-center font-exoFont border-r-2 border-black">
-          <h3 className=" text-xl text-black pb-8">Ongoing events</h3>
-          <div className="relative">
-            <Image src={FirstImage} alt={"events 1"} width={267} height={29} />
-            <div className=" flex space-x-3 inset-center text-white whitespace-nowrap">
-              <h4>Event name</h4>
-              <h4>Time and date</h4>
-            </div>
-            <div className="inset-center-sec text-white">
-              <h3>
-                <Link href={"/events"}>View more</Link>
-              </h3>
-            </div>
+      <div className="md:flex md:flex-row flex flex-col-reverse pb-10">
+        <div className=" md:w-4/12 w-11/12 flex flex-col mx-auto md:gap-8 justify-center items-center font-exoFont md:border-r-2 md:border-black">
+          <div>
+            <h3 className=" text-xl text-black pb-8">Your events</h3>
           </div>
+          <div className="md:flex md:flex-col grid grid-cols-2 gap-5">
+            <div className="relative">
+              <Image
+                src={FirstImage}
+                alt={"events 1"}
+                width={267}
+                height={29}
+              />
+              <div className=" flex space-x-3 inset-center text-white whitespace-nowrap">
+                <h4 className=" md:text-lg text-xs">Event name</h4>
+                <h4 className="md:text-lg text-xs">Time and date</h4>
+              </div>
+              <div className="inset-center-sec text-white">
+                <h3 className="md:text-lg text-xs">
+                  <Link href={"/events"}>View more</Link>
+                </h3>
+              </div>
+            </div>
 
-          <div className="relative">
-            <Image src={SecondImage} alt={"events 2"} width={267} height={29} />
-            <div className=" flex space-x-3 inset-center text-white whitespace-nowrap">
-              <h4>Event name</h4>
-              <h4>Time and date</h4>
+            <div className="relative">
+              <Image
+                src={SecondImage}
+                alt={"events 2"}
+                width={267}
+                height={29}
+              />
+              <div className=" flex space-x-3 inset-center text-white whitespace-nowrap">
+                <h4 className="md:text-lg text-xs">Event name</h4>
+                <h4 className="md:text-lg text-xs">Time and date</h4>
+              </div>
+              <div className="inset-center-sec text-white">
+                <h3 className="md:text-lg text-xs">
+                  <Link href={"/events"}>View more</Link>
+                </h3>
+              </div>
             </div>
-            <div className="inset-center-sec text-white">
-              <h3>
-                <Link href={"/events"}>View more</Link>
-              </h3>
-            </div>
-          </div>
-          <div className="relative">
-            <Image src={ThirtImage} alt={"events 3"} width={267} height={29} />
-            <div className=" flex space-x-3 inset-center text-white whitespace-nowrap">
-              <h4>Event name</h4>
-              <h4>Time and date</h4>
-            </div>
-            <div className="inset-center-sec text-white">
-              <h3>
-                <Link href={"/events"}>View more</Link>
-              </h3>
+            <div className="relative">
+              <Image
+                src={ThirtImage}
+                alt={"events 3"}
+                width={267}
+                height={29}
+              />
+              <div className=" flex space-x-3 inset-center text-white whitespace-nowrap">
+                <h4 className="md:text-lg text-xs">Event name</h4>
+                <h4 className="md:text-lg text-xs">Time and date</h4>
+              </div>
+              <div className="inset-center-sec text-white">
+                <h3 className="md:text-lg text-xs">
+                  <Link href={"/events"}>View more</Link>
+                </h3>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="w-8/12 font-exoFont">
-          <div className="flex justify-between items-center w-9/12 mx-auto  space-x-5 border-b-2 border-black">
-            <div>
-              <h2 className=" text-5xl font-bold pb-10 leading-tight">
+        <div className="md:w-8/12 font-exoFont w-11/12 mx-auto">
+          <div className="md:flex md:justify-between md:flex-row flex flex-col items-center md:w-9/12 w-11/12 mx-auto space-x-5 md:border-b-2 md:border-black">
+            <div className="md:pt-0 pt-5">
+              <h2 className=" md:text-5xl text-2xl font-bold pb-10 leading-tight">
                 Good afternoon Jana,<br></br> what are we doing today?
               </h2>
             </div>
@@ -68,9 +87,9 @@ export default function Dashboard() {
               </button>
             </div>
           </div>
-          <div className=" w-9/12 mx-auto  items-start pt-10 pb-20 border-b-2 border-black">
+          <div className=" md:w-9/12 w-11/12 mx-auto  items-start pt-10 md:pb-20 pb-0 md:border-b-2 md:border-black">
             <h3 className=" text-xl text-black pb-8">Ongoing events</h3>
-            <div className="flex justify-center space-x-7 ">
+            <div className="md:flex md:flex-row flex flex-col justify-center md:space-x-7 space-y-7 md:space-y-0 ">
               <div className="relative">
                 <Image
                   src={FourImage}
@@ -111,9 +130,9 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-          <div className=" w-9/12 mx-auto  items-start py-10">
+          <div className=" md:w-9/12 w-11/12 mx-auto  items-start md:pt-10 md:pb-20 pt-5 pb-10 ">
             <h3 className=" text-xl text-black pb-8">Upcoming events</h3>
-            <div className="flex justify-center space-x-7 ">
+            <div className="md:flex md:flex-row flex flex-col justify-center md:space-x-7 space-y-7 md:space-y-0 ">
               <div className="relative">
                 <Image
                   src={SixImage}
