@@ -5,7 +5,7 @@ import Image from "next/image";
 export default function Footer() {
   return (
     <footer className="mt-auto">
-      <div className="flex md:gap-10 gap-5 justify-end items-center w-10/12 mx-auto py-10 border-t-2 border-[#0AE47C] mt-auto">
+      <div className="flex md:gap-10 gap-5 justify-end items-center w-11/12 mx-auto py-10 border-t-2 border-[#0AE47C] mt-auto">
         <p className="md:text-sm text-xs whitespace-nowrap">powered by:</p>
         <Image
           src={BrainsterLogo}

@@ -9,11 +9,22 @@ import {
 import { SessionContextProvider } from "@supabase/auth-helpers-react";
 import { useState } from "react";
 import Layout from "@/layouts/FontProject";
-export default function App({
-  Component,
-  pageProps,
-}: AppProps<{ initialSession: Session }>) {
+import { NextPage } from "next";
+import type { ReactElement, ReactNode } from "react";
+
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
+  getLayout?: (page: ReactElement) => ReactNode;
+};
+
+type AppPropsWithLayout = AppProps & {
+  Component: NextPageWithLayout;
+  initialSession: Session;
+};
+
+export default function App({ Component, pageProps }: AppPropsWithLayout) {
   const [supabaseClient] = useState(() => createBrowserSupabaseClient());
+
+  const getLayout = Component.getLayout ?? ((page) => page);
 
   return (
     <SessionContextProvider
@@ -22,7 +33,7 @@ export default function App({
     >
       <QueryWrapper>
         <Layout>
-          <Component {...pageProps} />
+          {getLayout(<Component {...pageProps} />)}
           <Toaster position="top-center" />
         </Layout>
       </QueryWrapper>

@@ -2,7 +2,7 @@ import Image from "next/image";
 import Logo from "../../public/svg/Frame.svg";
 export default function Heder() {
   return (
-    <div className="w-10/12 mx-auto pt-10 ">
+    <div className="w-11/12 mx-auto pt-10 ">
       <Image
         src={Logo.src}
         alt={"Logo"}

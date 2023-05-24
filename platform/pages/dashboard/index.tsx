@@ -82,9 +82,12 @@ export default function Dashboard() {
               </h2>
             </div>
             <div>
-              <button className=" bg-greenis text-white font-semibold py-2 px-7 rounded-lg">
+              <Link
+                className=" bg-greenis text-white font-semibold py-2 px-7 rounded-lg"
+                href={"/dashboard/description"}
+              >
                 Create
-              </button>
+              </Link>
             </div>
           </div>
           <div className=" md:w-9/12 w-11/12 mx-auto  items-start pt-10 md:pb-20 pb-0 md:border-b-2 md:border-black">
