@@ -4,6 +4,9 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { Menu2 } from "tabler-icons-react";
 import { useState } from "react";
+import useSignOut from "@/utils/userSignOut";
+import React, { useContext } from "react";
+import { DashboardContext } from "../context/DashboardContext";
 type Props = {
   children: React.ReactNode;
 };
@@ -23,7 +26,7 @@ function DashboardLink({ href, onClick, children }: DashboardLinkProps) {
         href={href}
         className={`flex  items-center text-lg ${
           router.pathname === href
-            ? " font-semibold text-pink border-b-2 border-pink"
+            ? " font-bold text-greenis border-b-2 border-greenis"
             : ""
         }`}
         onClick={onClick}
@@ -41,7 +44,10 @@ function DashboardLink({ href, onClick, children }: DashboardLinkProps) {
 }
 
 export default function DashboardLayout({ children }: Props) {
+  const { mutate } = useSignOut();
+  const { eventName, setEventName } = useContext(DashboardContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  console.log(eventName);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -51,11 +57,22 @@ export default function DashboardLayout({ children }: Props) {
     <div className="bg-dashboard relative">
       <Heder />
       <main className="min-h-screen w-full ">
-        <nav>
+        <div className="md:w-7/12 w-11/12 md:py-7 pt-2 mx-auto">
+          <input
+            type="text"
+            placeholder="Name of the event"
+            className="bg-gray-50 border border-black text-gray-900 text-base rounded-lg block p-2.5 placeholder:w-full px-4 font-exoFont w-1/2"
+            value={eventName}
+            onChange={(e) => setEventName(e.target.value)}
+          />
+        </div>
+        <nav className=" font-exoFont">
           <div className=" flex items-center ">
-            {/* Show navigation bar on desktop */}
             <div className="hidden md:flex items-center gap-7 md:w-7/12 w-11/12  mx-auto ">
-              <DashboardLink href="/dashboard/description">
+              <DashboardLink
+                href="/dashboard/description"
+                onClick={() => setEventName(eventName)}
+              >
                 Description
               </DashboardLink>
               <DashboardLink href="/dashboard/agenda">Agenda</DashboardLink>
@@ -64,6 +81,11 @@ export default function DashboardLayout({ children }: Props) {
                 Statistics
               </DashboardLink>
               <DashboardLink href="/dashboard/results">Results</DashboardLink>
+              <DashboardLink onClick={mutate}>
+                <div className="bg-greenis text-white py-2 px-5 rounded-lg font-medium">
+                  Log out
+                </div>
+              </DashboardLink>
               <div className="ml-auto">
                 <DashboardLink>
                   <div className="bg-orange text-black py-2 px-10 rounded-lg whitespace-nowrap font-semibold">
@@ -73,7 +95,6 @@ export default function DashboardLayout({ children }: Props) {
               </div>
             </div>
 
-            {/* Show hamburger menu on mobile */}
             <div className="md:hidden">
               {isMenuOpen ? (
                 <div className="absolute left-0 top-0 h-full w-full  bg-white z-50">
@@ -113,6 +134,11 @@ export default function DashboardLayout({ children }: Props) {
                       onClick={toggleMenu}
                     >
                       Results
+                    </DashboardLink>
+                    <DashboardLink onClick={mutate}>
+                      <div className="bg-greenis text-white py-2 px-5 rounded-lg font-medium">
+                        Log out
+                      </div>
                     </DashboardLink>
                     <div>
                       <DashboardLink>

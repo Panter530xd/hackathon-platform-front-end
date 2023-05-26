@@ -1,32 +1,27 @@
-import useSignIn from "@/utils/useSignIn";
-import { useSupabaseClient } from "@supabase/auth-helpers-react";
+import LoadingSpiner from "@/components/LoadingSpiner";
+import useSignUp from "@/utils/userSignUp";
+import { IconCircleCheck } from "@tabler/icons-react";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Toast, toast } from "react-hot-toast";
-import LoadingSpiner from "../LoadingSpiner";
-import Link from "next/link";
-import { IconCircleCheck } from "@tabler/icons-react";
-export interface SignInFormData {
+export type SignUpFormData = {
+  fullName: string;
   email: string;
   password: string;
-}
+};
 
-export default function LogIn() {
+export default function SignUp() {
   const router = useRouter();
-  const { mutate, isLoading, isSuccess } = useSignIn();
+  const { mutate, isLoading, isSuccess } = useSignUp();
 
   const {
     register,
+    formState: { errors },
     handleSubmit,
     reset,
-    formState: { errors },
-  } = useForm<SignInFormData>({
-    defaultValues: { email: "demo@demo.com", password: "12345" },
-  });
+  } = useForm<SignUpFormData>();
 
-  const supabase = useSupabaseClient();
-
-  const onSubmit: SubmitHandler<SignInFormData> = (data) => {
+  const onSubmit: SubmitHandler<SignUpFormData> = (data) => {
     mutate(data, {
       onSuccess: () => {
         reset();
@@ -42,14 +37,24 @@ export default function LogIn() {
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col space-y-1 md:w-6/12 w-11/12 mx-auto element2 md:p-20 p-5 rounded-lg shadow-lg border-2"
       >
-        <h4 className="text-2xl font-bold text-center text-black">
-          Admin log in
-        </h4>
-        <label htmlFor="username" className="text-black">
-          User name
+        <h4 className="text-2xl font-bold text-center text-black">Sign up</h4>
+        <label htmlFor="fullName" className="text-black">
+          Full Name
         </label>
         <input
-          id="username"
+          id="fullName"
+          type="text"
+          {...register("fullName", { required: true, maxLength: 20 })}
+          className="bg-white border-2 border-greenis text-gray-900 text-sm rounded-lg  block w-full p-2.5 "
+        />
+        {errors.fullName && (
+          <span className="text-red-500">Full Name is required</span>
+        )}
+        <label htmlFor="email" className="text-black">
+          Email
+        </label>
+        <input
+          id="email"
           type="text"
           {...register("email", { required: true, maxLength: 20 })}
           className="bg-white border-2 border-greenis text-gray-900 text-sm rounded-lg  block w-full p-2.5 "
@@ -77,15 +82,15 @@ export default function LogIn() {
             {isLoading ? (
               <div className="flex items-center gap-2">
                 <LoadingSpiner />
-                Signing in
+                Signing up
               </div>
             ) : (
               <>
-                {!isSuccess && "Sign in"}
+                {!isSuccess && "Sign up"}
                 {isSuccess && (
                   <div className="flex items-center gap-2">
                     <IconCircleCheck className="h-6 w-6" />
-                    Signed in
+                    Signed up
                   </div>
                 )}
               </>
@@ -93,10 +98,10 @@ export default function LogIn() {
           </button>
         </div>
         <div className="text-center">
-          <span>Don{"'"}t have an account? </span>
+          <span>Have an account? </span>
 
-          <Link href="/sign-up" className="text-primary">
-            Sign up!
+          <Link href="/admin-login" className="text-primary">
+            Sign in!
           </Link>
         </div>
       </form>

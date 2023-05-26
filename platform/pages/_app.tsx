@@ -11,7 +11,7 @@ import { useState } from "react";
 import Layout from "@/layouts/FontProject";
 import { NextPage } from "next";
 import type { ReactElement, ReactNode } from "react";
-
+import { DashboardProvider } from "../context/DashboardContext";
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
@@ -32,10 +32,12 @@ export default function App({ Component, pageProps }: AppPropsWithLayout) {
       initialSession={pageProps.initialSession}
     >
       <QueryWrapper>
-        <Layout>
-          {getLayout(<Component {...pageProps} />)}
-          <Toaster position="top-center" />
-        </Layout>
+        <DashboardProvider>
+          <Layout>
+            {getLayout(<Component {...pageProps} />)}
+            <Toaster position="top-center" />
+          </Layout>
+        </DashboardProvider>
       </QueryWrapper>
     </SessionContextProvider>
   );
