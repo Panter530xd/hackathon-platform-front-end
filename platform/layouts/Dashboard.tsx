@@ -47,7 +47,6 @@ export default function DashboardLayout({ children }: Props) {
   const { mutate } = useSignOut();
   const { eventName, setEventName } = useContext(DashboardContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  console.log(eventName);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
