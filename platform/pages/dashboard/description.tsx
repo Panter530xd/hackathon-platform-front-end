@@ -60,9 +60,9 @@ const DashboardCreate: NextPageWithLayout = () => {
     let apiUrl: string;
 
     if (process.env.NODE_ENV === "development") {
-      apiUrl = process.env.API_URL_DEV!;
+      apiUrl = process.env.NEXT_PUBLIC_API_URL_DEV!;
     } else if (process.env.NODE_ENV === "production") {
-      apiUrl = process.env.API_URL_PROD!;
+      apiUrl = process.env.NEXT_PUBLIC_API_URL_PROD!;
     } else {
       throw new Error("Invalid NODE_ENV");
     }
