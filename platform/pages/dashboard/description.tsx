@@ -99,8 +99,6 @@ const DashboardCreate: NextPageWithLayout = () => {
 
   const onSubmit: SubmitHandler<FormData> = (data) => {
     data.name_of_event = eventName;
-    console.log(data);
-
     mutate(data);
   };
 
