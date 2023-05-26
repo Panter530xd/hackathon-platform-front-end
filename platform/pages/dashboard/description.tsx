@@ -57,16 +57,14 @@ const DashboardCreate: NextPageWithLayout = () => {
   const createEvent = async (data: FormData) => {
     data.name_of_event = eventName;
 
-    let apiUrl: string | undefined;
+    let apiUrl: string;
 
     if (process.env.NODE_ENV === "development") {
-      apiUrl = process.env.API_URL_DEV;
+      apiUrl = process.env.API_URL_DEV!;
     } else if (process.env.NODE_ENV === "production") {
-      apiUrl = process.env.API_URL_PROD;
-    }
-
-    if (!apiUrl) {
-      throw new Error("API URL is not defined");
+      apiUrl = process.env.API_URL_PROD!;
+    } else {
+      throw new Error("Invalid NODE_ENV");
     }
 
     const response = await fetch(apiUrl, {
@@ -81,7 +79,6 @@ const DashboardCreate: NextPageWithLayout = () => {
       throw new Error("Failed to create event");
     }
   };
-
   const { mutate } = useMutation(createEvent, {
     onSuccess: () => {
       reset();
