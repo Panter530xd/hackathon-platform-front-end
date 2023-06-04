@@ -4,7 +4,7 @@ dotenv.config();
 
 const config: Config = {
   schema: "./src/db/schema.ts",
-  out: "./.drizzle/migrations",
+  out: "./drizzle/migrations",
   connectionString: process.env.DATABASE_URL,
 } satisfies Config;
 
