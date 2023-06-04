@@ -1,6 +1,9 @@
 import { Router, IRequest } from "itty-router";
 import { createClient } from "@supabase/supabase-js";
-import { connect } from "@planetscale/database";
+import { Config, connect } from "@planetscale/database";
+import { drizzle } from "drizzle-orm/planetscale-serverless";
+import { z } from "zod";
+import { events } from "./db/schema";
 
 export interface Env {
   SUPABASE_URL: string;
@@ -11,6 +14,18 @@ export interface Env {
 }
 
 const router = Router();
+
+const eventShema = z.object({
+  name_of_event: z.string(),
+  location: z.string(),
+  type_of_event: z.string(),
+  submission_deadline: z.string(),
+  start_date: z.string(),
+  end_date: z.string(),
+  academies_part: z.string(),
+  event_info: z.string(),
+  client_info: z.string(),
+});
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -26,17 +41,8 @@ async function handleOptions(request: IRequest, env: Env) {
 }
 
 async function handleGetEvents(request: IRequest, env: Env) {
-  // CREATE CONNECTION TO SUPABASE
   const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
 
-  // AUTHENTICATE THE USER
-
-  // const { data } = await supabase.auth.getUser(req.body.jwt);
-
-  // Use Supabase for some functionality
-  // const { data: supabaseData } = await supabase.from("events").select("*");
-
-  // CREATE CONNECTION TO PLANETSCALE
   const config = {
     host: env.DATABASE_HOST,
     username: env.DATABASE_USERNAME,
@@ -46,12 +52,13 @@ async function handleGetEvents(request: IRequest, env: Env) {
       return fetch(url, init);
     },
   };
-  const conn = connect(config as any);
+  const conn = connect(config as unknown as Config);
 
-  // RUN QUERIES ON PLANETSCALE
-  const { rows: planetscaleData } = await conn.execute("SELECT * FROM events");
+  const db = drizzle(conn);
+  const allEvents = await db.select().from(events);
+  console.log(allEvents);
 
-  return new Response(JSON.stringify({ planetscaleData }), {
+  return new Response(JSON.stringify({ allEvents }), {
     status: 200,
     headers: {
       ...corsHeaders,
@@ -62,7 +69,18 @@ async function handleGetEvents(request: IRequest, env: Env) {
 
 async function handlePostEvents(request: IRequest, env: Env) {
   const reqBody = await request.json();
-  console.log(reqBody);
+  const parsedBody = eventShema.safeParse(reqBody);
+
+  if (!parsedBody.success) {
+    return new Response(JSON.stringify(parsedBody.error), {
+      status: 404,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST",
+      },
+    });
+  }
 
   const config = {
     host: env.DATABASE_HOST,
@@ -73,23 +91,10 @@ async function handlePostEvents(request: IRequest, env: Env) {
       return fetch(url, init);
     },
   };
-  const conn = connect(config as any);
+  const conn = connect(config as unknown as Config);
 
-  // INSERT DATA INTO PLANETSCALE
-  await conn.execute(
-    "INSERT INTO events (name_of_event, location, type_of_event, submission_deadline, start_date, end_date, academies_part, event_info, client_info) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-    [
-      reqBody.name_of_event,
-      reqBody.location,
-      reqBody.type_of_event,
-      reqBody.submission_deadline,
-      reqBody.start_date,
-      reqBody.end_date,
-      reqBody.academies_part,
-      reqBody.event_info,
-      reqBody.client_info,
-    ]
-  );
+  const db = drizzle(conn);
+  await db.insert(events).values(parsedBody.data);
 
   return new Response("200 OK", {
     headers: {

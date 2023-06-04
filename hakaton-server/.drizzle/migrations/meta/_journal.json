@@ -1,0 +1,27 @@
+{
+  "version": "5",
+  "dialect": "mysql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "5",
+      "when": 1685885972837,
+      "tag": "0000_acoustic_microbe",
+      "breakpoints": false
+    },
+    {
+      "idx": 1,
+      "version": "5",
+      "when": 1685891400033,
+      "tag": "0001_sloppy_mephistopheles",
+      "breakpoints": false
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1685906597479,
+      "tag": "0002_sweet_proemial_gods",
+      "breakpoints": false
+    }
+  ]
+}

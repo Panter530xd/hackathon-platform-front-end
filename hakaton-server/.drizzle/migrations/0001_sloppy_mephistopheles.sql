@@ -1,0 +1,10 @@
+ALTER TABLE `events` MODIFY COLUMN `name_of_event` varchar(256) NOT NULL;
+ALTER TABLE `events` MODIFY COLUMN `location` varchar(256) NOT NULL;
+ALTER TABLE `events` MODIFY COLUMN `type_of_event` varchar(256) NOT NULL;
+ALTER TABLE `events` MODIFY COLUMN `submission_deadline` varchar(256) NOT NULL;
+ALTER TABLE `events` MODIFY COLUMN `start_date` varchar(256) NOT NULL;
+ALTER TABLE `events` MODIFY COLUMN `end_date` varchar(256) NOT NULL;
+ALTER TABLE `events` MODIFY COLUMN `academies_part` varchar(256) NOT NULL;
+ALTER TABLE `events` MODIFY COLUMN `client_info` varchar(256) NOT NULL;
+ALTER TABLE `events` ADD `created_at` timestamp DEFAULT (now()) NOT NULL;
+ALTER TABLE `events` ADD `updated_at` timestamp DEFAULT (now()) NOT NULL ON UPDATE CURRENT_TIMESTAMP;
