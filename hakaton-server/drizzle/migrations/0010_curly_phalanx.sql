@@ -1,0 +1,2 @@
+ALTER TABLE `groups` DROP PRIMARY KEY
+ALTER TABLE `groups` MODIFY COLUMN `academy_id` serial AUTO_INCREMENT;

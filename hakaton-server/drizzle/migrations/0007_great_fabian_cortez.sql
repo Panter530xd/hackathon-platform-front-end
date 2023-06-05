@@ -1,0 +1,1 @@
+ALTER TABLE `groups` MODIFY COLUMN `academy_id` varchar(256) NOT NULL;

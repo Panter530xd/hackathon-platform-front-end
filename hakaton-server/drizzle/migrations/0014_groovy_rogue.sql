@@ -1,0 +1,1 @@
+ALTER TABLE `groups` ADD PRIMARY KEY (`academy_id`);

@@ -1,0 +1,1 @@
+ALTER TABLE `groups` ADD CONSTRAINT `groups_academy_id_name_academies_id_name_fk` FOREIGN KEY (`academy_id`,`name`) REFERENCES `academies`(`id`,`name`) ON DELETE no action ON UPDATE no action;

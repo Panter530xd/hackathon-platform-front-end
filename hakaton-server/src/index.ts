@@ -3,7 +3,8 @@ import { createClient } from "@supabase/supabase-js";
 import { Config, connect } from "@planetscale/database";
 import { drizzle } from "drizzle-orm/planetscale-serverless";
 import { z } from "zod";
-import { events } from "./db/schema";
+import { events } from "./db/schema/events";
+import { academies } from "./db/schema/academies";
 
 export interface Env {
   SUPABASE_URL: string;
@@ -25,6 +26,17 @@ const eventShema = z.object({
   academies_part: z.string(),
   event_info: z.string(),
   client_info: z.string(),
+});
+
+const academySchema = z.object({
+  id: z.number(),
+  name: z.string(),
+});
+
+const groupSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  academyId: z.number(),
 });
 
 const corsHeaders = {
@@ -67,6 +79,32 @@ async function handleGetEvents(request: IRequest, env: Env) {
   });
 }
 
+async function handleGetAcademies(request: IRequest, env: Env) {
+  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
+
+  const config = {
+    host: env.DATABASE_HOST,
+    username: env.DATABASE_USERNAME,
+    password: env.DATABASE_PASSWORD,
+    fetch: (url: string, init: IRequest) => {
+      delete init["cache"];
+      return fetch(url, init);
+    },
+  };
+  const conn = connect(config as unknown as Config);
+
+  const db = drizzle(conn);
+  const allAcademy = await db.select().from(academies);
+  console.log(allAcademy);
+
+  return new Response(JSON.stringify({ allAcademy }), {
+    status: 200,
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/json",
+    },
+  });
+}
 async function handlePostEvents(request: IRequest, env: Env) {
   const reqBody = await request.json();
   const parsedBody = eventShema.safeParse(reqBody);
@@ -110,7 +148,8 @@ async function handlePostEvents(request: IRequest, env: Env) {
 router
   .options("*", handleOptions)
   .get("/api/events", handleGetEvents)
-  .post("/api/events", handlePostEvents);
+  .post("/api/events", handlePostEvents)
+  .get("/api/academies", handleGetAcademies);
 
 export default {
   fetch: router.handle,

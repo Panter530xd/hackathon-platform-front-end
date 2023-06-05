@@ -1,0 +1,1 @@
+ALTER TABLE `groups` RENAME COLUMN `academy_id` TO `academy.id`;
