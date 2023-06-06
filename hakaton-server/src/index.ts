@@ -4,7 +4,7 @@ import { Config, connect } from "@planetscale/database";
 import { drizzle } from "drizzle-orm/planetscale-serverless";
 import { z } from "zod";
 import { events } from "./db/schema/events";
-import { academies } from "./db/schema/academies";
+import { academies, groups } from "./db/schema/academies";
 
 export interface Env {
   SUPABASE_URL: string;
@@ -79,7 +79,7 @@ async function handleGetEvents(request: IRequest, env: Env) {
   });
 }
 
-async function handleGetAcademies(request: IRequest, env: Env) {
+async function handleGetAcademy(request: IRequest, env: Env) {
   const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
 
   const config = {
@@ -94,10 +94,40 @@ async function handleGetAcademies(request: IRequest, env: Env) {
   const conn = connect(config as unknown as Config);
 
   const db = drizzle(conn);
-  const allAcademy = await db.select().from(academies);
-  console.log(allAcademy);
+  const allAcademies = await db.select().from(academies);
+  console.log(allAcademies);
 
-  return new Response(JSON.stringify({ allAcademy }), {
+  return new Response(JSON.stringify({ allAcademies }), {
+    status: 200,
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
+}
+
+async function handleGetGroups(request: IRequest, env: Env) {
+  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
+
+  const config = {
+    host: env.DATABASE_HOST,
+    username: env.DATABASE_USERNAME,
+    password: env.DATABASE_PASSWORD,
+    fetch: (url: string, init: IRequest) => {
+      delete init["cache"];
+      return fetch(url, init);
+    },
+  };
+  const conn = connect(config as unknown as Config);
+
+  const db = drizzle(conn);
+  const allGroups = await db.select().from(groups);
+  console.log(allGroups);
+
+  return new Response(JSON.stringify({ allGroups }), {
     status: 200,
     headers: {
       ...corsHeaders,
@@ -105,6 +135,7 @@ async function handleGetAcademies(request: IRequest, env: Env) {
     },
   });
 }
+
 async function handlePostEvents(request: IRequest, env: Env) {
   const reqBody = await request.json();
   const parsedBody = eventShema.safeParse(reqBody);
@@ -147,9 +178,10 @@ async function handlePostEvents(request: IRequest, env: Env) {
 
 router
   .options("*", handleOptions)
+  .get("/api/academies", handleGetAcademy)
   .get("/api/events", handleGetEvents)
-  .post("/api/events", handlePostEvents)
-  .get("/api/academies", handleGetAcademies);
+  .get("/api/groups", handleGetGroups)
+  .post("/api/events", handlePostEvents);
 
 export default {
   fetch: router.handle,

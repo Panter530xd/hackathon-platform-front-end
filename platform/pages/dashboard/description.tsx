@@ -3,13 +3,22 @@ import { NextPageWithLayout } from "../_app";
 import DashboardLayout from "../../layouts/Dashboard";
 import Head from "next/head";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { DashboardContext } from "@/context/DashboardContext";
 
 type EventType = {
   value: string;
   label: string;
+};
+
+type Academy = {
+  id: number;
+  name: string;
+};
+
+type AcademiesOptions = {
+  allAcademies: Academy[];
 };
 
 type FormData = {
@@ -41,18 +50,40 @@ const DashboardCreate: NextPageWithLayout = () => {
     formState: { errors },
   } = useForm<FormData>();
 
-  const [academiesOptions, setAcademiesOptions] = useState<EventType[]>([
-    { value: "1", label: "UX/UI Дизајн" },
-    { value: "2", label: "Дигитален Маркетинг" },
-    { value: "3", label: "Графички Дизајн" },
-    { value: "4", label: "Project and Product Management" },
-    { value: "5", label: "Data Science" },
-    { value: "6", label: "Човечки Ресурси" },
-    { value: "7", label: "Full-Stack програмирање" },
-    { value: "8", label: "Front-end програмирање" },
-    { value: "9", label: "Software testing" },
-    { value: "10", label: "Leadirship and Management" },
-  ]);
+  const { data: academiesOptions = { allAcademies: [] } } =
+    useQuery<AcademiesOptions>(["academies"], async () => {
+      try {
+        let apiUrl: string;
+
+        if (process.env.NODE_ENV === "development") {
+          apiUrl = process.env.NEXT_PUBLIC_API_URL_DEV!;
+        } else if (process.env.NODE_ENV === "production") {
+          apiUrl = process.env.NEXT_PUBLIC_API_URL_PROD!;
+        } else {
+          throw new Error("Invalid NODE_ENV");
+        }
+
+        const response = await fetch(`${apiUrl}/api/academies`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch academies");
+        }
+
+        const data = await response.json();
+        console.log(data);
+        return data;
+      } catch (error) {
+        console.error("Error fetching academies:", error);
+        throw error;
+      }
+    });
+
+  console.log("Academy", academiesOptions);
 
   const createEvent = async (data: FormData) => {
     data.name_of_event = eventName;
@@ -67,7 +98,7 @@ const DashboardCreate: NextPageWithLayout = () => {
       throw new Error("Invalid NODE_ENV");
     }
 
-    const response = await fetch(apiUrl, {
+    const response = await fetch(`${apiUrl}/api/events`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -208,11 +239,12 @@ const DashboardCreate: NextPageWithLayout = () => {
             className="bg-gray-50 border border-black text-gray-900 text-base rounded-lg block w-full p-2.5 placeholder:w-full md:px-4 px-2 font-exoFont"
           >
             <option value="">Academies part of the event</option>
-            {academiesOptions.map((option) => (
-              <option key={option.value} value={option.label}>
-                {option.label}
-              </option>
-            ))}
+            {Array.isArray(academiesOptions.allAcademies) &&
+              academiesOptions.allAcademies.map((academy) => (
+                <option key={academy.id} value={academy.id}>
+                  {academy.name}
+                </option>
+              ))}
           </select>
           {errors.academies_part && (
             <span className="text-red-700 font-bold">
