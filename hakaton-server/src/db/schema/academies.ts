@@ -80,7 +80,7 @@ const groupData = [
 const seedGroups = async (db: PlanetScaleDatabase<Record<string, never>>) => {
   const existingGroups = await db.select().from(groups).execute();
   const existingGroupNames = existingGroups.map(
-    (group: { name: any }) => group.name
+    (group: { name: string }) => group.name
   );
 
   const newGroups = groupData.filter(
@@ -88,28 +88,24 @@ const seedGroups = async (db: PlanetScaleDatabase<Record<string, never>>) => {
   );
 
   await db.insert(groups).values(newGroups).execute();
+  console.log("Groups seeded successfully.");
 };
 
 const seedAcademies = async (
   db: PlanetScaleDatabase<Record<string, never>>
 ) => {
   await db.insert(academies).values(academyData).execute();
+  console.log("Academies seeded successfully.");
 };
 
 const seedData = async () => {
   try {
     const db = createDbConnection(); // Create the database connection
 
-    await seedAcademies(db); // Seed academies
-    console.log("Academies seeded successfully.");
-
-    await seedGroups(db); // Seed groups
-    console.log("Groups seeded successfully.");
-
-    process.exit(0); // Exit the script with a successful status code
+    await seedAcademies(db);
+    await seedGroups(db);
   } catch (error) {
     console.error("Error seeding data:", error);
-    process.exit(1); // Exit the script with an error status code
   }
 };
 
