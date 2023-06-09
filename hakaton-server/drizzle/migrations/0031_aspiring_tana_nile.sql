@@ -1,0 +1,16 @@
+CREATE TABLE `registration` (
+	`id` serial AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	`first_name` varchar(256) NOT NULL,
+	`last_name` varchar(256) NOT NULL,
+	`email` varchar(256) NOT NULL,
+	`phone` varchar(256) NOT NULL,
+	`academy` varchar(256) NOT NULL,
+	`group` varchar(256) NOT NULL,
+	`number_months` varchar(256) NOT NULL,
+	`participation_live` boolean NOT NULL,
+	`participation_online` boolean NOT NULL,
+	`food_allergies` varchar(256),
+	`food_preferences` varchar(256),
+	`accept_terms` boolean NOT NULL,
+	`created_at` timestamp NOT NULL DEFAULT (now()),
+	`updated_at` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP);

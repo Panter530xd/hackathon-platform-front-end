@@ -5,6 +5,8 @@ import { drizzle } from "drizzle-orm/planetscale-serverless";
 import { z } from "zod";
 import { events } from "./db/schema/events";
 import { academies, groups } from "./db/schema/academies";
+import { foodAllergies } from "./db/schema/food_allergies";
+import { registration } from "./db/schema/registration";
 
 export interface Env {
   SUPABASE_URL: string;
@@ -39,6 +41,20 @@ const groupSchema = z.object({
   academyId: z.number(),
 });
 
+const registrationSchema = z.object({
+  first_name: z.string(),
+  last_name: z.string(),
+  email: z.string().email(),
+  phone: z.string(),
+  academy: z.string(),
+  group: z.string(),
+  number_months: z.string(),
+  participation: z.string(),
+  food_allergies: z.string(),
+  food_preferences: z.string(),
+  accept_terms: z.boolean(),
+});
+
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "HEAD,GET,POST,PUT,PATCH,DELETE,OPTIONS",
@@ -49,6 +65,33 @@ async function handleOptions(request: IRequest, env: Env) {
   return new Response(null, {
     status: 204,
     headers: { ...corsHeaders },
+  });
+}
+
+async function handleGetRegistration(request: IRequest, env: Env) {
+  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
+
+  const config = {
+    host: env.DATABASE_HOST,
+    username: env.DATABASE_USERNAME,
+    password: env.DATABASE_PASSWORD,
+    fetch: (url: string, init: IRequest) => {
+      delete init["cache"];
+      return fetch(url, init);
+    },
+  };
+  const conn = connect(config as unknown as Config);
+
+  const db = drizzle(conn);
+  const allRegistration = await db.select().from(registration);
+  console.log(allRegistration);
+
+  return new Response(JSON.stringify({ allRegistration }), {
+    status: 200,
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/json",
+    },
   });
 }
 
@@ -136,13 +179,40 @@ async function handleGetGroups(request: IRequest, env: Env) {
   });
 }
 
+async function handleGetFoods(request: IRequest, env: Env) {
+  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
+
+  const config = {
+    host: env.DATABASE_HOST,
+    username: env.DATABASE_USERNAME,
+    password: env.DATABASE_PASSWORD,
+    fetch: (url: string, init: IRequest) => {
+      delete init["cache"];
+      return fetch(url, init);
+    },
+  };
+  const conn = connect(config as unknown as Config);
+
+  const db = drizzle(conn);
+  const allFoodsAllergies = await db.select().from(foodAllergies);
+  console.log(allFoodsAllergies);
+
+  return new Response(JSON.stringify({ allFoodsAllergies }), {
+    status: 200,
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/json",
+    },
+  });
+}
+
 async function handlePostEvents(request: IRequest, env: Env) {
   const reqBody = await request.json();
   const parsedBody = eventShema.safeParse(reqBody);
 
   if (!parsedBody.success) {
     return new Response(JSON.stringify(parsedBody.error), {
-      status: 404,
+      status: 400,
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
@@ -176,12 +246,59 @@ async function handlePostEvents(request: IRequest, env: Env) {
   });
 }
 
+async function handlePostRegistration(request: IRequest, env: Env) {
+  const reqBody = await request.json();
+  const parsedBody = registrationSchema.safeParse(reqBody);
+
+  if (!parsedBody.success) {
+    return new Response(JSON.stringify(parsedBody.error), {
+      status: 400,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST",
+      },
+    });
+  }
+
+  const config = {
+    host: env.DATABASE_HOST,
+    username: env.DATABASE_USERNAME,
+    password: env.DATABASE_PASSWORD,
+    fetch: (url: string, init: IRequest) => {
+      delete init["cache"];
+      return fetch(url, init);
+    },
+  };
+  const conn = connect(config as unknown as Config);
+
+  const db = drizzle(conn);
+  await db.insert(registration).values(parsedBody.data);
+
+  return new Response(
+    JSON.stringify({ message: "Registration created successfully" }),
+    {
+      status: 200,
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+    }
+  );
+}
+
 router
   .options("*", handleOptions)
   .get("/api/academies", handleGetAcademy)
   .get("/api/events", handleGetEvents)
   .get("/api/groups", handleGetGroups)
-  .post("/api/events", handlePostEvents);
+  .get("/api/food_allergies", handleGetFoods)
+  .post("/api/events", handlePostEvents)
+  .post("/api/registration", handlePostRegistration)
+  .get("/api/registration", handleGetRegistration);
 
 export default {
   fetch: router.handle,

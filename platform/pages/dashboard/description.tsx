@@ -6,6 +6,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import { DashboardContext } from "@/context/DashboardContext";
+import { env } from "@/env.mjs";
 
 type EventType = {
   value: string;
@@ -53,22 +54,15 @@ const DashboardCreate: NextPageWithLayout = () => {
   const { data: academiesOptions = { allAcademies: [] } } =
     useQuery<AcademiesOptions>(["academies"], async () => {
       try {
-        let apiUrl: string;
-
-        if (process.env.NODE_ENV === "development") {
-          apiUrl = process.env.NEXT_PUBLIC_API_URL_DEV!;
-        } else if (process.env.NODE_ENV === "production") {
-          apiUrl = process.env.NEXT_PUBLIC_API_URL_PROD!;
-        } else {
-          throw new Error("Invalid NODE_ENV");
-        }
-
-        const response = await fetch(`${apiUrl}/api/academies`, {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await fetch(
+          `${env.NEXT_PUBLIC_API_URL}/api/academies`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Failed to fetch academies");
@@ -88,17 +82,7 @@ const DashboardCreate: NextPageWithLayout = () => {
   const createEvent = async (data: FormData) => {
     data.name_of_event = eventName;
 
-    let apiUrl: string;
-
-    if (process.env.NODE_ENV === "development") {
-      apiUrl = process.env.NEXT_PUBLIC_API_URL_DEV!;
-    } else if (process.env.NODE_ENV === "production") {
-      apiUrl = process.env.NEXT_PUBLIC_API_URL_PROD!;
-    } else {
-      throw new Error("Invalid NODE_ENV");
-    }
-
-    const response = await fetch(`${apiUrl}/api/events`, {
+    const response = await fetch(`${env.NEXT_PUBLIC_API_URL}/api/events`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
