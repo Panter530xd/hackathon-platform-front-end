@@ -13,6 +13,7 @@ import FoodChartAlergies from "../../components/charts/FoodChartAlergies";
 import LoadingSkeleton from "@/components/charts/Loading/LoadingSkeleton";
 import { error } from "console";
 import toast from "react-hot-toast";
+import Link from "next/link";
 
 const DashboardCreate: NextPageWithLayout = () => {
   const { academiesPartStats, eventTypeStats, isLoading, isError } =
@@ -117,9 +118,12 @@ const DashboardCreate: NextPageWithLayout = () => {
             <div>No data available</div>
           )}
           <div>
-            <button className=" bg-greenis text-black py-2 px-[52px] rounded-lg font-semibold lg:text-lg text:base whitespace-nowrap">
+            <Link
+              className=" bg-greenis text-black py-2 px-[52px] rounded-lg font-semibold lg:text-lg text:base whitespace-nowrap"
+              href={"/dashboard/teams"}
+            >
               Generate teams
-            </button>
+            </Link>
           </div>
         </div>
         <section className="lg:flex lg:flex-row flex-col space-y-5 lg:space-y-0 justify-center lg:py-10 py-5 items-center gap-10">
