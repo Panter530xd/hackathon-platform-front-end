@@ -6,7 +6,7 @@ export default function Home() {
   const { asPath } = useRouter();
 
   return (
-    <div className="w-10/12 mx-auto py-5 ">
+    <div className="w-10/12 mx-auto py-5 max-w-screen-xl ">
       <nav className=" w-8/12 mx-auto hidden md:block">
         <ul className="flex justify-between items-center ">
           <li>

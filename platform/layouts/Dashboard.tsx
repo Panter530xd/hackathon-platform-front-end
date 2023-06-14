@@ -56,7 +56,7 @@ export default function DashboardLayout({ children }: Props) {
     <div className="bg-dashboard relative">
       <Heder />
       <main className="min-h-screen w-full ">
-        <div className="md:w-7/12 w-11/12 md:py-7 pt-2 mx-auto">
+        <div className="md:w-7/12 w-11/12 md:py-7 pt-2 mx-auto max-w-screen-xl">
           <input
             type="text"
             placeholder="Name of the event"
@@ -67,7 +67,7 @@ export default function DashboardLayout({ children }: Props) {
         </div>
         <nav className=" font-exoFont">
           <div className=" flex items-center ">
-            <div className="hidden md:flex items-center gap-7 md:w-7/12 w-11/12  mx-auto ">
+            <div className="hidden md:flex items-center gap-6 md:w-7/12 w-11/12 mx-auto max-w-screen-xl ">
               <DashboardLink
                 href="/dashboard/description"
                 onClick={() => setEventName(eventName)}
@@ -154,9 +154,9 @@ export default function DashboardLayout({ children }: Props) {
               ) : (
                 <button
                   onClick={toggleMenu}
-                  className="flex items-center rounded-lg absolute top-[70px] left-5"
+                  className="flex items-center rounded-lg absolute top-[75px] left-5"
                 >
-                  <Menu2 size={30} />
+                  <Menu2 size={35} />
                 </button>
               )}
             </div>

@@ -174,7 +174,7 @@ const RegistrationForm = () => {
             <option value="">Select Group</option>
             {groupsPerAcademy &&
               groupsPerAcademy.map((group) => (
-                <option key={group.id} value={group.academyId}>
+                <option key={group.id} value={group.name}>
                   {group.name}
                 </option>
               ))}
