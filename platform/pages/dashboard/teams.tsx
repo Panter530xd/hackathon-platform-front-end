@@ -95,7 +95,8 @@ const DashboardCreate: NextPageWithLayout = () => {
   }
 
   useEffect(() => {
-    if (registrationData) {
+    if (registrationData && registrationData.length > 0) {
+      // Check if registrationData is defined and not empty
       const shuffledData = shuffleArray(registrationData); // Shuffle the array randomly
       const numTables = Math.ceil(shuffledData.length / 10);
       const generatedTeams: Team[][] = [];
@@ -178,7 +179,6 @@ const DashboardCreate: NextPageWithLayout = () => {
       console.error(error);
     }
   };
-
   const handleEditFormCancel = () => {
     setIsEditFormOpen(false);
     setEditedTeam(null);

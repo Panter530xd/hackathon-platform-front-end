@@ -369,7 +369,6 @@ async function handlePostUpdate(request: IRequest, env: Env) {
   const db = drizzle(conn);
 
   if (parsedBody.data.id) {
-    // If registration ID is present, update the existing registration
     await db
       .update(registration)
       .set(parsedBody.data)
@@ -379,15 +378,19 @@ async function handlePostUpdate(request: IRequest, env: Env) {
     await db.insert(registration).values(parsedBody.data);
   }
 
-  return new Response("200 OK", {
-    headers: {
-      ...corsHeaders,
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-      "Access-Control-Allow-Methods": "POST, PUT",
-      "Access-Control-Allow-Headers": "Content-Type",
-    },
-  });
+  return new Response(
+    JSON.stringify({ message: "Registration created successfully" }),
+    {
+      status: 200,
+      headers: {
+        ...corsHeaders,
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, DELETE, PUT",
+        "Access-Control-Allow-Headers": "Content-Type",
+      },
+    }
+  );
 }
 
 router
