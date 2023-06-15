@@ -28,6 +28,7 @@ const RegistrationForm = () => {
     formState: { errors },
     watch,
     reset,
+    setValue,
   } = useForm<FormValues>();
 
   const watchAcademy = watch("academy");
@@ -38,7 +39,7 @@ const RegistrationForm = () => {
   const groupsPerAcademy =
     groupsQuery && watchAcademy
       ? groupsQuery.allGroups.filter(
-          (group) => group.academyId === watchAcademy
+          (group) => group.academyId === String(watchAcademy)
         )
       : null;
 
@@ -79,6 +80,13 @@ const RegistrationForm = () => {
   const onSubmit = async (data: FormValues) => {
     try {
       const { ...formData } = data;
+
+      const selectedAcademy = academiesOptions.allAcademies.find(
+        (academy) => academy.id.toString() === watchAcademy
+      );
+
+      formData.academy = selectedAcademy?.name || "";
+
       await registrationMutation.mutateAsync(formData);
     } catch (error: any) {
       console.error(error);
@@ -156,6 +164,7 @@ const RegistrationForm = () => {
               </option>
             ))}
         </select>
+
         {errors.academy && (
           <span className="text-red-700 font-bold">Academies are required</span>
         )}

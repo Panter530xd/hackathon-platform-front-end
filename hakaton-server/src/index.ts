@@ -7,6 +7,7 @@ import { events } from "./db/schema/events";
 import { academies, groups } from "./db/schema/academies";
 import { foodAllergies } from "./db/schema/food_allergies";
 import { registration } from "./db/schema/registration";
+import { eq } from "drizzle-orm";
 
 export interface Env {
   SUPABASE_URL: string;
@@ -42,6 +43,7 @@ const groupSchema = z.object({
 });
 
 const registrationSchema = z.object({
+  id: z.number(),
   first_name: z.string(),
   last_name: z.string(),
   email: z.string().email(),
@@ -256,7 +258,7 @@ async function handlePostRegistration(request: IRequest, env: Env) {
       headers: {
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST",
+        "Access-Control-Allow-Methods": "GET, POST, DELETE, PUT",
       },
     });
   }
@@ -283,11 +285,109 @@ async function handlePostRegistration(request: IRequest, env: Env) {
         ...corsHeaders,
         "Content-Type": "application/json",
         "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "POST",
+        "Access-Control-Allow-Methods": "GET, POST, DELETE, PUT",
         "Access-Control-Allow-Headers": "Content-Type",
       },
     }
   );
+}
+
+async function handleDeleteRegistration(request: IRequest, env: Env) {
+  const reqBody = await request.json();
+  const teamId = reqBody.teamId;
+
+  const config = {
+    host: env.DATABASE_HOST,
+    username: env.DATABASE_USERNAME,
+    password: env.DATABASE_PASSWORD,
+    fetch: (url: string, init: IRequest) => {
+      delete init["cache"];
+      return fetch(url, init);
+    },
+  };
+  const conn = connect(config as unknown as Config);
+
+  const db = drizzle(conn);
+
+  try {
+    await db.select().from(registration);
+    console.log(registration);
+
+    await db.delete(registration).where(eq(registration.id, teamId));
+    console.log(teamId);
+
+    return new Response(
+      JSON.stringify({ message: "Registration deleted successfully" }),
+      {
+        status: 200,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ error: "Failed to delete registration" }),
+      {
+        status: 400,
+        headers: {
+          ...corsHeaders,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+  }
+}
+
+async function handlePostUpdate(request: IRequest, env: Env) {
+  const reqBody = await request.json();
+  const parsedBody = registrationSchema.safeParse(reqBody);
+
+  if (!parsedBody.success) {
+    return new Response(JSON.stringify(parsedBody.error), {
+      status: 400,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, POST, PUT",
+      },
+    });
+  }
+
+  const config = {
+    host: env.DATABASE_HOST,
+    username: env.DATABASE_USERNAME,
+    password: env.DATABASE_PASSWORD,
+    fetch: (url: string, init: IRequest) => {
+      delete init["cache"];
+      return fetch(url, init);
+    },
+  };
+  const conn = connect(config as unknown as Config);
+
+  const db = drizzle(conn);
+
+  if (parsedBody.data.id) {
+    // If registration ID is present, update the existing registration
+    await db
+      .update(registration)
+      .set(parsedBody.data)
+      .where(eq(registration.id, parsedBody.data.id));
+  } else {
+    // If registration ID is not present, insert a new registration
+    await db.insert(registration).values(parsedBody.data);
+  }
+
+  return new Response("200 OK", {
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, PUT",
+      "Access-Control-Allow-Headers": "Content-Type",
+    },
+  });
 }
 
 router
@@ -298,7 +398,9 @@ router
   .get("/api/food_allergies", handleGetFoods)
   .post("/api/events", handlePostEvents)
   .post("/api/registration", handlePostRegistration)
-  .get("/api/registration", handleGetRegistration);
+  .get("/api/registration", handleGetRegistration)
+  .delete("/api/registration", handleDeleteRegistration)
+  .put("/api/registration", handlePostUpdate);
 
 export default {
   fetch: router.handle,
