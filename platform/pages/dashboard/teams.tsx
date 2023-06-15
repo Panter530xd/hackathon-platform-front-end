@@ -83,6 +83,21 @@ const DashboardCreate: NextPageWithLayout = () => {
   const [editedTeam, setEditedTeam] = useState<Team | null>(null);
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
 
+  function generateRandomTeams(registrationData: Team[]): Team[][] {
+    const shuffledData = shuffleArray(registrationData);
+    const numTables = Math.ceil(shuffledData.length / 10);
+    const generatedTeams: Team[][] = [];
+
+    for (let i = 0; i < numTables; i++) {
+      const startIndex = i * 10;
+      const endIndex = startIndex + 10;
+      const teamsForTable = shuffledData.slice(startIndex, endIndex);
+      generatedTeams.push(teamsForTable);
+    }
+
+    return generatedTeams;
+  }
+
   function shuffleArray<T>(array: T[]): T[] {
     const newArray = [...array];
 
@@ -96,26 +111,7 @@ const DashboardCreate: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (registrationData && registrationData.length > 0) {
-      const shuffledData = shuffleArray(registrationData);
-      const numTables = Math.ceil(shuffledData.length / 10);
-      const generatedTeams: Team[][] = [];
-
-      for (let i = 0; i < numTables; i++) {
-        const startIndex = i * 10;
-        const endIndex = startIndex + 10;
-        const teamsForTable = shuffledData.slice(startIndex, endIndex);
-        generatedTeams.push(teamsForTable);
-      }
-
-      if (generatedTeams.length > 0) {
-        const lastTable = generatedTeams[generatedTeams.length - 1];
-        if (lastTable.length < 10) {
-          const remainingTeams = generatedTeams.splice(-1)[0];
-          const updatedLastTable = [...lastTable, ...remainingTeams];
-          generatedTeams.push(updatedLastTable);
-        }
-      }
-
+      const generatedTeams = generateRandomTeams(registrationData);
       setTeams(generatedTeams);
     }
   }, [registrationData]);
