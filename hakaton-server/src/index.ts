@@ -385,9 +385,6 @@ async function handlePostUpdate(request: IRequest, env: Env) {
       headers: {
         ...corsHeaders,
         "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, POST, DELETE, PUT",
-        "Access-Control-Allow-Headers": "Content-Type",
       },
     }
   );
@@ -403,7 +400,7 @@ router
   .post("/api/registration", handlePostRegistration)
   .get("/api/registration", handleGetRegistration)
   .delete("/api/registration", handleDeleteRegistration)
-  .put("/api/registration", handlePostUpdate);
+  .put("/api/registration/:id", handlePostUpdate);
 
 export default {
   fetch: router.handle,
