@@ -161,7 +161,12 @@ const DashboardCreate: NextPageWithLayout = () => {
       // Send the updated team data to the server
       const response = await axios.put(
         `${env.NEXT_PUBLIC_API_URL}/api/registration/${editedTeam?.id}`,
-        editedTeam
+        editedTeam,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
 
       if (response.status === 200) {
@@ -180,6 +185,7 @@ const DashboardCreate: NextPageWithLayout = () => {
       console.error(error);
     }
   };
+
   const handleEditFormCancel = () => {
     setIsEditFormOpen(false);
     setEditedTeam(null);
@@ -241,7 +247,7 @@ const DashboardCreate: NextPageWithLayout = () => {
         {/* Edit Form */}
         {isEditFormOpen && editedTeam && (
           <div className="fixed inset-0 flex items-center justify-center bg-black/50">
-            <div className="bg-white rounded-lg p-4 md:w-full max-w-md">
+            <div className="bg-white rounded-lg p-4 md:w-full max-w-md w-11/12 mx-auto">
               <h2 className="text-lg font-medium text-gray-900">Edit Team</h2>
               <form
                 onSubmit={(e) => {
