@@ -96,8 +96,7 @@ const DashboardCreate: NextPageWithLayout = () => {
 
   useEffect(() => {
     if (registrationData && registrationData.length > 0) {
-      // Check if registrationData is defined and not empty
-      const shuffledData = shuffleArray(registrationData); // Shuffle the array randomly
+      const shuffledData = shuffleArray(registrationData);
       const numTables = Math.ceil(shuffledData.length / 10);
       const generatedTeams: Team[][] = [];
 
@@ -108,11 +107,13 @@ const DashboardCreate: NextPageWithLayout = () => {
         generatedTeams.push(teamsForTable);
       }
 
-      // Check if the last table has fewer than 10 teams
-      const lastTable = generatedTeams[generatedTeams.length - 1];
-      if (lastTable.length < 10) {
-        const remainingTeams = generatedTeams.splice(-1)[0];
-        generatedTeams[generatedTeams.length - 1].push(...remainingTeams);
+      if (generatedTeams.length > 0) {
+        const lastTable = generatedTeams[generatedTeams.length - 1];
+        if (lastTable.length < 10) {
+          const remainingTeams = generatedTeams.splice(-1)[0];
+          const updatedLastTable = [...lastTable, ...remainingTeams];
+          generatedTeams.push(updatedLastTable);
+        }
       }
 
       setTeams(generatedTeams);
