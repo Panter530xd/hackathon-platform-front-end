@@ -6,6 +6,8 @@ import DashboardLayout from "../../layouts/Dashboard";
 import Head from "next/head";
 import useERegistrationData from "@/utils/useRegistrationData";
 import { env } from "../../env.mjs";
+import { generateRandomTeams } from "@/utils/utils";
+import { deleteTeam } from "../../utils/handleDeleteTeam";
 import {
   CancelButton,
   EditButton,
@@ -83,32 +85,6 @@ const DashboardCreate: NextPageWithLayout = () => {
   const [editedTeam, setEditedTeam] = useState<Team | null>(null);
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
 
-  function generateRandomTeams(registrationData: Team[]): Team[][] {
-    const shuffledData = shuffleArray(registrationData);
-    const numTables = Math.ceil(shuffledData.length / 10);
-    const generatedTeams: Team[][] = [];
-
-    for (let i = 0; i < numTables; i++) {
-      const startIndex = i * 10;
-      const endIndex = startIndex + 10;
-      const teamsForTable = shuffledData.slice(startIndex, endIndex);
-      generatedTeams.push(teamsForTable);
-    }
-
-    return generatedTeams;
-  }
-
-  function shuffleArray<T>(array: T[]): T[] {
-    const newArray = [...array];
-
-    for (let i = newArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
-    }
-
-    return newArray;
-  }
-
   useEffect(() => {
     if (registrationData && registrationData.length > 0) {
       const generatedTeams = generateRandomTeams(registrationData);
@@ -117,29 +93,7 @@ const DashboardCreate: NextPageWithLayout = () => {
   }, [registrationData]);
 
   const handleDeleteTeam = async (teamId: number) => {
-    try {
-      const response = await axios.delete(
-        `${env.NEXT_PUBLIC_API_URL}/api/registration`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-          data: { teamId },
-        }
-      );
-
-      if (response.status === 200) {
-        const updatedTeams = teams.map((table) =>
-          table.filter((team) => team.id !== teamId)
-        );
-        setTeams(updatedTeams);
-        console.log(`Deleting team with ID: ${teamId}`);
-      } else {
-        console.log("Failed to delete team");
-      }
-    } catch (error) {
-      console.error(error);
-    }
+    await deleteTeam(teamId, teams, setTeams);
   };
 
   const handleEditTeam = (teamId: number) => {
