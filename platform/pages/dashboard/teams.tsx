@@ -1,6 +1,5 @@
 import React, { ReactNode, useState, useEffect } from "react";
-import { Transition } from "@headlessui/react";
-import { Trash, Edit, DotsVertical } from "tabler-icons-react";
+import { DotsVertical } from "tabler-icons-react";
 import { NextPageWithLayout } from "../_app";
 import DashboardLayout from "../../layouts/Dashboard";
 import Head from "next/head";
@@ -8,11 +7,8 @@ import useERegistrationData from "@/utils/useRegistrationData";
 import { env } from "../../env.mjs";
 import { generateRandomTeams } from "@/utils/utils";
 import { deleteTeam } from "../../utils/handleDeleteTeam";
-import {
-  CancelButton,
-  EditButton,
-  DeleteButton,
-} from "../../components/ui/Button";
+import AlertDialog from "../../components/ui/AlertDialog";
+import { CancelButton } from "../../components/ui/Button";
 import axios from "axios";
 
 interface Team {
@@ -22,66 +18,12 @@ interface Team {
   academy: string;
 }
 
-interface AlertDialogProps {
-  isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
-  onDelete: () => void;
-  onEdit: () => void;
-}
-
-const AlertDialog: React.FC<AlertDialogProps> = ({
-  isOpen,
-  setIsOpen,
-  onDelete,
-  onEdit,
-}) => {
-  const handleConfirm = () => {
-    onDelete();
-    setIsOpen(false);
-  };
-
-  return (
-    <Transition.Root show={isOpen} as="div">
-      <div className="fixed inset-0 z-20 bg-black/50"></div>
-      <Transition.Child
-        enter="transition-opacity duration-300"
-        enterFrom="opacity-0"
-        enterTo="opacity-100"
-        leave="transition-opacity duration-200"
-        leaveFrom="opacity-100"
-        leaveTo="opacity-0"
-        as="div"
-      >
-        <div className="fixed z-50 w-[95vw] max-w-md rounded-lg p-4 md:w-full top-[50%] left-[50%] -translate-x-[50%] -translate-y-[50%] bg-white dark:bg-gray-800 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75">
-          <h2 className="text-sm font-medium text-gray-900 dark:text-gray-100">
-            Are you absolutely sure?
-          </h2>
-          <p className="mt-2 text-sm font-normal text-gray-700 dark:text-gray-400">
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </p>
-          <div className="mt-4 flex justify-end space-x-2">
-            <CancelButton onClick={() => setIsOpen(false)}>Cancel</CancelButton>
-            <EditButton onClick={onEdit}>
-              <Edit />
-            </EditButton>
-            <DeleteButton onClick={handleConfirm}>
-              <Trash />
-            </DeleteButton>
-          </div>
-        </div>
-      </Transition.Child>
-    </Transition.Root>
-  );
-};
-
 const DashboardCreate: NextPageWithLayout = () => {
   const { registrationData, isError, isLoading } = useERegistrationData();
   const [showPopUp, setShowPopUp] = useState(false);
   const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
   const [teams, setTeams] = useState<Team[][]>([]);
 
-  // New state variables for the edit form
   const [editedTeam, setEditedTeam] = useState<Team | null>(null);
   const [isEditFormOpen, setIsEditFormOpen] = useState(false);
 
@@ -97,7 +39,6 @@ const DashboardCreate: NextPageWithLayout = () => {
   };
 
   const handleEditTeam = (teamId: number) => {
-    // Find the team with the given ID
     const teamToEdit = teams.flat().find((team) => team.id === teamId);
 
     if (teamToEdit) {
@@ -108,7 +49,6 @@ const DashboardCreate: NextPageWithLayout = () => {
 
   const handleEditFormSubmit = async () => {
     try {
-      // Send the updated team data to the server
       const response = await axios.put(
         `${env.NEXT_PUBLIC_API_URL}/api/registration/${editedTeam?.id}`,
         editedTeam,
@@ -120,7 +60,6 @@ const DashboardCreate: NextPageWithLayout = () => {
       );
 
       if (response.status === 200) {
-        // Update the team in the state with the updated data
         const updatedTeams = teams.map((table) =>
           table.map((team) => (team.id === editedTeam?.id ? editedTeam : team))
         );
@@ -144,7 +83,6 @@ const DashboardCreate: NextPageWithLayout = () => {
   const togglePopUp = (teamId: number) => {
     setShowPopUp((prevState) => {
       if (prevState && selectedTeamId === teamId) {
-        // Close the dialog if it's already open and the same team is clicked again
         return false;
       } else {
         setSelectedTeamId(teamId);
