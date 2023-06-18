@@ -43,6 +43,19 @@ const groupSchema = z.object({
 });
 
 const registrationSchema = z.object({
+  first_name: z.string(),
+  last_name: z.string(),
+  email: z.string().email(),
+  phone: z.string(),
+  academy: z.string(),
+  group: z.string(),
+  number_months: z.string(),
+  participation: z.string(),
+  food_allergies: z.string(),
+  food_preferences: z.string(),
+  accept_terms: z.boolean(),
+});
+const registrationUpdateSchema = z.object({
   id: z.number(),
   first_name: z.string(),
   last_name: z.string(),
@@ -342,7 +355,7 @@ async function handleDeleteRegistration(request: IRequest, env: Env) {
 
 async function handlePostUpdate(request: IRequest, env: Env) {
   const reqBody = await request.json();
-  const parsedBody = registrationSchema.safeParse(reqBody);
+  const parsedBody = registrationUpdateSchema.safeParse(reqBody);
 
   if (!parsedBody.success) {
     return new Response(JSON.stringify(parsedBody.error), {
