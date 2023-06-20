@@ -1,0 +1,3 @@
+ALTER TABLE `teams` MODIFY COLUMN `id` int AUTO_INCREMENT NOT NULL;
+ALTER TABLE `teams` DROP COLUMN `created_at`;
+ALTER TABLE `teams` DROP COLUMN `updated_at`;

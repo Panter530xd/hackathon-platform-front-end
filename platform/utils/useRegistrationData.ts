@@ -3,7 +3,7 @@ import axios from "axios";
 import { env } from "../env.mjs";
 import { useEffect, useState } from "react";
 
-interface RegistrationData {
+export interface RegistrationData {
   id: number;
   first_name: string;
   last_name: string;
