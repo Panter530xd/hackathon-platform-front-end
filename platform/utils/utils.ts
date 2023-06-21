@@ -2,7 +2,17 @@ interface Team {
   id: number;
   first_name: string;
   last_name: string;
+  email: string;
+  phone: string;
   academy: string;
+  group: string;
+  number_months: string;
+  participation: string;
+  food_allergies: string;
+  food_preferences: string;
+  accept_terms: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
 export function generateRandomTeams(registrationData: Team[]): Team[][] {

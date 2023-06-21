@@ -587,6 +587,9 @@ async function handlePutRegisterTeam(request: IRequest, env: Env) {
       console.log("Result:", result); // Log the result of the update operation
     }
 
+    // Call the function responsible for rendering the table
+    renderTable(); // Replace "renderTable" with the actual function name
+
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
       headers: {
@@ -608,6 +611,12 @@ async function handlePutRegisterTeam(request: IRequest, env: Env) {
       }
     );
   }
+}
+
+// Function to render the table
+function renderTable() {
+  // Replace with your actual code to render the table
+  console.log("Table rendered with updated data");
 }
 
 router
