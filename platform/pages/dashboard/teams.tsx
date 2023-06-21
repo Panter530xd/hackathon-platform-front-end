@@ -78,8 +78,8 @@ const DashboardCreate: NextPageWithLayout = () => {
     const updatedDestinationTable = Array.from(teams[destinationTableIndex]);
     updatedDestinationTable.splice(destination.index, 0, draggedTeam);
 
-    // Update the teams state
-    const updatedTeams = Array.from(teams);
+    // Create a copy of the teams array to update state atomically
+    const updatedTeams = [...teams];
     updatedTeams[sourceTableIndex] = updatedSourceTable;
     updatedTeams[destinationTableIndex] = updatedDestinationTable;
 
@@ -110,7 +110,7 @@ const DashboardCreate: NextPageWithLayout = () => {
       if (
         uniqueTeamsInState.length !== allTeamsFromAPI.length ||
         !allTeamsFromAPI.some((team: Team) =>
-          uniqueTeamsInState.every((stateTeam) => stateTeam.id !== team.id)
+          uniqueTeamsInState.some((stateTeam) => stateTeam.id === team.id)
         )
       ) {
         // If the lengths are different or there are missing/new teams, make the POST request to create/update the teams
