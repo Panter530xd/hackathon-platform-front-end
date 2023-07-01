@@ -42,8 +42,6 @@ const options: EventType[] = [
 const DashboardCreate: NextPageWithLayout = () => {
   const { eventName } = useContext(DashboardContext);
 
-  console.log(eventName);
-
   const {
     register,
     handleSubmit,
@@ -76,8 +74,6 @@ const DashboardCreate: NextPageWithLayout = () => {
         throw error;
       }
     });
-
-  console.log("Academy", academiesOptions);
 
   const createEvent = async (data: FormData) => {
     data.name_of_event = eventName;

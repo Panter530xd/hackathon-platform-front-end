@@ -3,9 +3,7 @@ import { DotsVertical } from "tabler-icons-react";
 import { NextPageWithLayout } from "../_app";
 import DashboardLayout from "../../layouts/Dashboard";
 import Head from "next/head";
-import useERegistrationData, {
-  RegistrationData,
-} from "@/utils/useRegistrationData";
+import useERegistrationData from "@/utils/useRegistrationData";
 import { env } from "../../env.mjs";
 import { generateRandomTeams } from "@/utils/utils";
 import { deleteTeam } from "../../utils/handleDeleteTeam";
@@ -20,7 +18,6 @@ import {
   Draggable,
   DropResult,
 } from "react-beautiful-dnd";
-import { log } from "console";
 
 interface Team {
   id: number;
@@ -50,103 +47,6 @@ const DashboardCreate: NextPageWithLayout = () => {
     }
   }, [registrationData]);
 
-  const handleDragEnd = async (result: DropResult) => {
-    if (!result.destination) {
-      return;
-    }
-
-    const { source, destination } = result;
-    const sourceTableIndex = parseInt(source.droppableId.split("-")[1]);
-    const destinationTableIndex = parseInt(
-      destination.droppableId.split("-")[1]
-    );
-    const draggedTeam = teams[sourceTableIndex][source.index];
-
-    if (
-      source.droppableId === destination.droppableId &&
-      source.index === destination.index
-    ) {
-      // If the source and destination are the same, no need to update positions
-      return;
-    }
-
-    // Remove the dragged team from the source table
-    const updatedSourceTable = Array.from(teams[sourceTableIndex]);
-    updatedSourceTable.splice(source.index, 1);
-
-    // Add the dragged team to the destination table
-    const updatedDestinationTable = Array.from(teams[destinationTableIndex]);
-    updatedDestinationTable.splice(destination.index, 0, draggedTeam);
-
-    // Create a copy of the teams array to update state atomically
-    const updatedTeams = [...teams];
-    updatedTeams[sourceTableIndex] = updatedSourceTable;
-    updatedTeams[destinationTableIndex] = updatedDestinationTable;
-
-    // Extract required fields for each team
-    const extractTeamFields = (team: Team) => {
-      const { id, first_name, last_name, academy } = team;
-      return { id, first_name, last_name, academy };
-    };
-
-    // Update the teams state with extracted fields
-    const updatedTeamsExtracted = updatedTeams.map((table) =>
-      table.map((team) => extractTeamFields(team))
-    );
-    console.log(updatedTeamsExtracted);
-
-    try {
-      const response = await axios.get(`${env.NEXT_PUBLIC_API_URL}/api/teams`);
-      const responseData = response.data;
-
-      const allTeamsInState = updatedTeamsExtracted.flat();
-      const allTeamsFromAPI = responseData.allTeams;
-
-      // Filter out duplicate teams by ID
-      const uniqueTeamsInState = allTeamsInState.filter(
-        (team, index, self) => index === self.findIndex((t) => t.id === team.id)
-      );
-
-      if (
-        uniqueTeamsInState.length !== allTeamsFromAPI.length ||
-        !allTeamsFromAPI.some((team: Team) =>
-          uniqueTeamsInState.some((stateTeam) => stateTeam.id === team.id)
-        )
-      ) {
-        // If the lengths are different or there are missing/new teams, make the POST request to create/update the teams
-        const postResponse = await axios.post(
-          `${env.NEXT_PUBLIC_API_URL}/api/teams`,
-          { teams: uniqueTeamsInState },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        console.log("Teams created/updated successfully");
-      } else {
-        // If the lengths are the same and no missing/new teams, make the PUT request to update team positions
-        const putResponse = await axios.put(
-          `${env.NEXT_PUBLIC_API_URL}/api/teams`,
-          { teams: uniqueTeamsInState },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        console.log("Teams positions updated successfully");
-      }
-
-      // Set the teams state after the update
-      setTeams(updatedTeams);
-      localStorage.setItem("teams", JSON.stringify(updatedTeams));
-    } catch (error) {
-      // Handle any errors that occur during the request
-      console.error("Failed to update teams positions:", error);
-    }
-  };
-
   // const handleDragEnd = async (result: DropResult) => {
   //   if (!result.destination) {
   //     return;
@@ -171,53 +71,151 @@ const DashboardCreate: NextPageWithLayout = () => {
   //   const updatedSourceTable = Array.from(teams[sourceTableIndex]);
   //   updatedSourceTable.splice(source.index, 1);
 
-  //   // Add the dragged team to the destination table if it's not already present
+  //   // Add the dragged team to the destination table
   //   const updatedDestinationTable = Array.from(teams[destinationTableIndex]);
-  //   if (!updatedDestinationTable.includes(draggedTeam)) {
-  //     updatedDestinationTable.splice(destination.index, 0, draggedTeam);
-  //   }
+  //   updatedDestinationTable.splice(destination.index, 0, draggedTeam);
 
-  //   // Update the teams state
-  //   const updatedTeams = Array.from(teams);
+  //   // Create a copy of the teams array to update state atomically
+  //   const updatedTeams = [...teams];
   //   updatedTeams[sourceTableIndex] = updatedSourceTable;
   //   updatedTeams[destinationTableIndex] = updatedDestinationTable;
 
+  //   // Extract required fields for each team
+  //   const extractTeamFields = (team: Team) => {
+  //     const { id, first_name, last_name, academy } = team;
+  //     return { id, first_name, last_name, academy };
+  //   };
+
+  //   // Update the teams state with extracted fields
   //   const updatedTeamsExtracted = updatedTeams.map((table) =>
-  //     table.map((team) => {
-  //       const { id, ...rest } = team;
-  //       return { id, ...rest };
-  //     })
+  //     table.map((team) => extractTeamFields(team))
   //   );
   //   console.log(updatedTeamsExtracted);
 
   //   try {
-  //     // Update the team positions in the database
-  //     const allTeamsInState = updatedTeams.flat();
-  //     console.log(allTeamsInState);
+  //     const response = await axios.get(`${env.NEXT_PUBLIC_API_URL}/api/teams`);
+  //     const responseData = response.data;
 
-  //     const putResponse = await axios.put(
-  //       `${env.NEXT_PUBLIC_API_URL}/api/registration`,
-  //       { allTeamsInState },
-  //       {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       }
+  //     const allTeamsInState = updatedTeamsExtracted.flat();
+  //     const allTeamsFromAPI = responseData.allTeams;
+
+  //     // Filter out duplicate teams by ID
+  //     const uniqueTeamsInState = allTeamsInState.filter(
+  //       (team, index, self) => index === self.findIndex((t) => t.id === team.id)
   //     );
 
-  //     if (putResponse.status === 200) {
-  //       console.log("Team positions updated successfully");
-  //       console.log({ teams: allTeamsInState });
-
-  //       // Set the teams state after the update
-  //       setTeams(updatedTeams);
+  //     if (
+  //       uniqueTeamsInState.length !== allTeamsFromAPI.length ||
+  //       !allTeamsFromAPI.some((team: Team) =>
+  //         uniqueTeamsInState.some((stateTeam) => stateTeam.id === team.id)
+  //       )
+  //     ) {
+  //       // If the lengths are different or there are missing/new teams, make the POST request to create/update the teams
+  //       const postResponse = await axios.post(
+  //         `${env.NEXT_PUBLIC_API_URL}/api/teams`,
+  //         { teams: uniqueTeamsInState },
+  //         {
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       );
+  //       console.log("Teams created/updated successfully");
   //     } else {
-  //       console.error("Failed to update team positions");
+  //       // If the lengths are the same and no missing/new teams, make the PUT request to update team positions
+  //       const putResponse = await axios.put(
+  //         `${env.NEXT_PUBLIC_API_URL}/api/teams`,
+  //         { teams: uniqueTeamsInState },
+  //         {
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //           },
+  //         }
+  //       );
+  //       console.log("Teams positions updated successfully");
   //     }
+
+  //     // Set the teams state after the update
+  //     setTeams(updatedTeams);
+  //     localStorage.setItem("teams", JSON.stringify(updatedTeams));
   //   } catch (error) {
-  //     console.error("Failed to update team positions:", error);
+  //     // Handle any errors that occur during the request
+  //     console.error("Failed to update teams positions:", error);
   //   }
   // };
+
+  const handleDragEnd = async (result: DropResult) => {
+    if (!result.destination) {
+      return;
+    }
+
+    const { source, destination } = result;
+    const sourceTableIndex = parseInt(source.droppableId.split("-")[1]);
+    const destinationTableIndex = parseInt(
+      destination.droppableId.split("-")[1]
+    );
+    const draggedTeam = teams[sourceTableIndex][source.index];
+
+    if (
+      source.droppableId === destination.droppableId &&
+      source.index === destination.index
+    ) {
+      // If the source and destination are the same, no need to update positions
+      return;
+    }
+
+    // Remove the dragged team from the source table
+    const updatedSourceTable = Array.from(teams[sourceTableIndex]);
+    updatedSourceTable.splice(source.index, 1);
+
+    // Add the dragged team to the destination table if it's not already present
+    const updatedDestinationTable = Array.from(teams[destinationTableIndex]);
+    if (!updatedDestinationTable.includes(draggedTeam)) {
+      updatedDestinationTable.splice(destination.index, 0, draggedTeam);
+    }
+
+    // Update the teams state
+    const updatedTeams = Array.from(teams);
+    updatedTeams[sourceTableIndex] = updatedSourceTable;
+    updatedTeams[destinationTableIndex] = updatedDestinationTable;
+
+    const updatedTeamsExtracted = updatedTeams.map((table) =>
+      table.map((team) => {
+        const { id, ...rest } = team;
+        return { id, ...rest };
+      })
+    );
+    console.log(updatedTeamsExtracted);
+
+    // Set the teams state immediately after the drag and drop
+    setTeams(updatedTeams);
+    localStorage.setItem("teams", JSON.stringify(updatedTeams));
+
+    // Update the team positions in the database
+    const allTeamsInState = updatedTeams.flat();
+    console.log(allTeamsInState);
+
+    try {
+      const putResponse = await axios.put(
+        `${env.NEXT_PUBLIC_API_URL}/api/registration`,
+        { allTeamsInState },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (putResponse.status === 200) {
+        console.log("Team positions updated successfully");
+        console.log({ teams: allTeamsInState });
+      } else {
+        console.error("Failed to update team positions");
+      }
+    } catch (error) {
+      console.error("Failed to update team positions:", error);
+    }
+  };
 
   const handleDeleteTeam = async (teamId: number) => {
     await deleteTeam(teamId, teams, setTeams);
@@ -233,7 +231,11 @@ const DashboardCreate: NextPageWithLayout = () => {
   };
 
   if (isLoading) {
-    return <SkeletonTeams size={8} />;
+    return (
+      <div>
+        <SkeletonTeams size={20} />
+      </div>
+    );
   }
 
   if (isError) {
@@ -292,6 +294,7 @@ const DashboardCreate: NextPageWithLayout = () => {
         <meta name="description" content="Generated by create next app" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
+
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="pb-10 grid md:grid-cols-2 grid-cols-1 gap-10 md:w-7/12 w-11/12 max-w-screen-xl mx-auto pt-10 ">
           {teams.map((teamTable, tableIndex) => (
@@ -306,6 +309,14 @@ const DashboardCreate: NextPageWithLayout = () => {
                   className=""
                 >
                   <tbody>
+                    <tr>
+                      <th
+                        colSpan={2}
+                        className="text-lg font-medium text-left text-gray-900 py-3"
+                      >
+                        Team {tableIndex + 1}
+                      </th>
+                    </tr>
                     {teamTable.map((team, index) => (
                       <Draggable
                         draggableId={`team-${tableIndex}-${team.id}`}
