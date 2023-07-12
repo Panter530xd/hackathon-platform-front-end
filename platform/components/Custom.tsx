@@ -7,7 +7,7 @@ interface CustomTimePickerProps {
   id: string;
   placeholder: string;
   value: string;
-  onChange: (...event: any[]) => void;
+  onChange: (value: string) => void;
 }
 
 const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
@@ -19,9 +19,35 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
   const [selectedTime, setSelectedTime] = useState<Date | null>(null);
   const inputRef = useRef<HTMLInputElement | null>(null);
 
-  const handleTimeChange = (time: Date) => {
+  useEffect(() => {
+    if (value) {
+      const timeParts = value.split(":");
+      const hours = parseInt(timeParts[0]);
+      const minutes = parseInt(timeParts[1]);
+
+      if (!isNaN(hours) && !isNaN(minutes)) {
+        const date = new Date();
+        date.setHours(hours);
+        date.setMinutes(minutes);
+        setSelectedTime(date);
+      }
+    } else {
+      setSelectedTime(null);
+    }
+  }, [value]);
+
+  const handleTimeChange = (time: Date | null) => {
     setSelectedTime(time);
-    onChange(time);
+
+    if (time) {
+      const formattedTime = time.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+      onChange(formattedTime);
+    } else {
+      onChange("");
+    }
   };
 
   const CustomInput = React.forwardRef<HTMLInputElement | null>(
@@ -32,9 +58,10 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
         setInputValue(value || "");
       }, [value]);
 
+
       return (
         <div
-          className="flex justify-between items-center w-32 h-10 rounded-md border border-gray-300 px-2 cursor-pointer"
+          className="flex justify-between items-center md:w-32 w-20 h-10 rounded-md border border-gray-300 px-2 cursor-pointer"
           onClick={onClick}
         >
           <span className="mr-2">{inputValue || placeholder}</span>
@@ -53,6 +80,7 @@ const CustomTimePicker: React.FC<CustomTimePickerProps> = ({
 
   return (
     <div>
+     
       <DatePicker
         selected={selectedTime}
         onChange={handleTimeChange}

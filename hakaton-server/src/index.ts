@@ -9,6 +9,7 @@ import { foodAllergies } from "./db/schema/food_allergies";
 import { registration } from "./db/schema/registration";
 import { eq } from "drizzle-orm";
 import { teams } from "./db/schema/teams";
+import { agenda } from "./db/schema/agenda";
 
 export interface Env {
   SUPABASE_URL: string;
@@ -88,6 +89,24 @@ const teamSchema = z.object({
       academy: z.string().nonempty("Required"),
     })
   ),
+});
+
+
+const agendaSchema = z.object({
+  eventDurationFrom: z.string(),
+  eventDurationTo: z.string(),
+  eventOpeningFrom: z.string(),
+  eventOpeningTo: z.string(),
+  findYourSpotFrom: z.string(),
+  findYourSpotTo: z.string(),
+  firstRoundSessionsFrom: z.string(),
+  firstRoundSessionsTo: z.string(),
+  secondRoundSessionsFrom: z.string(),
+  secondRoundSessionsTo: z.string(),
+  registrationFrom: z.string(),
+  registrationTo: z.string(),
+  presentationsFrom: z.string(),
+  presentationsTo: z.string(),
 });
 
 const corsHeaders = {
@@ -610,6 +629,99 @@ async function handlePutRegisterTeam(request: IRequest, env: Env) {
   }
 }
 
+
+
+async function handleGetAgenda(request: IRequest, env: Env) {
+  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
+
+  const config = {
+    host: env.DATABASE_HOST,
+    username: env.DATABASE_USERNAME,
+    password: env.DATABASE_PASSWORD,
+    fetch: (url: string, init: IRequest) => {
+      delete init["cache"];
+      return fetch(url, init);
+    },
+  };
+  const conn = connect(config as unknown as Config);
+
+  const db = drizzle(conn);
+  const allAgendaItems = await db.select().from(agenda);
+  console.log(allAgendaItems);
+
+  return new Response(JSON.stringify({ allAgendaItems }), {
+    status: 200,
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+async function handlePostAgenda(request: IRequest, env: Env) {
+  const reqBody = await request.json();
+  const parsedBody = agendaSchema.safeParse(reqBody);
+
+  if (!parsedBody.success) {
+    return new Response(JSON.stringify(parsedBody.error), {
+      status: 400,
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST",
+      },
+    });
+  }
+
+  const config = {
+    host: env.DATABASE_HOST,
+    username: env.DATABASE_USERNAME,
+    password: env.DATABASE_PASSWORD,
+    fetch: (url: string, init: IRequest) => {
+      delete init["cache"];
+      return fetch(url, init);
+    },
+  };
+  const conn = connect(config as unknown as Config);
+
+  const db = drizzle(conn);
+  await db.insert(agenda).values(parsedBody.data);
+
+  return new Response(JSON.stringify({ success: true }), {
+    status: 201,
+    headers: {
+      ...corsHeaders,
+      "Content-Type": "application/json",
+    },
+  });
+}
+
+async function handleScheduled(controller: ScheduledController, env: Env, ctx: ExecutionContext): Promise<void> {
+  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_ANON_KEY);
+
+  const config = {
+    host: env.DATABASE_HOST,
+    username: env.DATABASE_USERNAME,
+    password: env.DATABASE_PASSWORD,
+    fetch: (url: string, init: IRequest) => {
+      delete init["cache"];
+      return fetch(url, init);
+    },
+  };
+  const conn = connect(config as unknown as Config);
+
+  const db = drizzle(conn);
+  const allAgendaItems = await db.select().from(agenda);
+  const allTeams = await db.select().from(teams);
+  const allRegistration = await db.select().from(registration);
+  const allEvents = await db.select().from(events);
+
+  const { data } = await supabase.from("events").select("*");
+ 
+
+  console.log("Cron executed at", new Date().toLocaleDateString());
+}
+
 router
   .options("*", handleOptions)
   .get("/api/academies", handleGetAcademy)
@@ -624,8 +736,11 @@ router
   .get("/api/teams", handleGetTeams)
   .post("/api/teams", handlePostTeam)
   .put("/api/teams", handlePutTeam)
-  .put("/api/registration", handlePutRegisterTeam);
+  .put("/api/registration", handlePutRegisterTeam)
+  .get("/api/agenda", handleGetAgenda)
+  .post("/api/agenda", handlePostAgenda);
 
 export default {
   fetch: router.handle,
+  scheduled: handleScheduled,
 };

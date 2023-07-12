@@ -1,0 +1,18 @@
+CREATE TABLE `agenda` (
+	`id` serial AUTO_INCREMENT PRIMARY KEY NOT NULL,
+	`eventDurationFrom` varchar(256) NOT NULL,
+	`eventDurationTo` varchar(256) NOT NULL,
+	`eventOpeningFrom` varchar(256) NOT NULL,
+	`eventOpeningTo` varchar(256) NOT NULL,
+	`findYourSpotFrom` varchar(256) NOT NULL,
+	`findYourSpotTo` varchar(256) NOT NULL,
+	`firstRoundSessionsFrom` varchar(256) NOT NULL,
+	`firstRoundSessionsTo` varchar(256) NOT NULL,
+	`secondRoundSessionsFrom` varchar(256) NOT NULL,
+	`secondRoundSessionsTo` varchar(256) NOT NULL,
+	`registrationFrom` varchar(256) NOT NULL,
+	`registrationTo` varchar(256) NOT NULL,
+	`presentationsFrom` varchar(256) NOT NULL,
+	`presentationsTo` varchar(256) NOT NULL,
+	`created_at` timestamp NOT NULL DEFAULT (now()),
+	`updated_at` timestamp NOT NULL DEFAULT (now()) ON UPDATE CURRENT_TIMESTAMP);

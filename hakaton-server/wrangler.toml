@@ -2,3 +2,6 @@ name = "hakaton-server"
 main = "src/index.ts"
 compatibility_date = "2023-05-16"
 
+[triggers]
+crons = [ "0 12 * * *" ]
+
