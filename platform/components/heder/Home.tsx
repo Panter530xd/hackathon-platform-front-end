@@ -84,9 +84,9 @@ export default function Home() {
         <div className="text-greenis font-exoFont  font-bold md:text-5xl text-3xl md:leading-normal">
           <h1 className="p-0">HackMatch</h1>
           <div className="flex flex-col md:flex-row md:gap-5 gap-2">
-            <link href="/admin-login" className="bg-white font-exoFont text-greenis  py-1 px-2 rounded-lg md:mt-5 mt-3 text-lg  border-greenis  border-2">
+            <Link href="/admin-login" className="bg-white font-exoFont text-greenis  py-1 px-2 rounded-lg md:mt-5 mt-3 text-lg  border-greenis  border-2">
               Get Update
-            </link>
+            </Link>
           </div>
         </div>
         <div>
